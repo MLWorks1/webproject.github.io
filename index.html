@@ -2,7 +2,8 @@
 <html lang="fa">
 <head>
   <meta charset="UTF-8">
-  <title>Glass Box</title>
+  <title>ML & Deep</title>
+
   <style>
     body {
       margin: 0;
@@ -10,11 +11,12 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
       background-size: 400% 400%;
-      animation: gradientBG 15s ease infinite;
+      animation: gradientBG 12s ease infinite;
       font-family: "Segoe UI", Tahoma, sans-serif;
       overflow: hidden;
+      color: #fff;
     }
 
     @keyframes gradientBG {
@@ -23,150 +25,118 @@
       100% { background-position: 0% 50%; }
     }
 
+    /* ===== Mouse Light ===== */
     .light {
       position: fixed;
-      width: 250px;
-      height: 250px;
+      width: 280px;
+      height: 280px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,255,255,0.6), transparent 80%);
+      background: radial-gradient(circle, rgba(255,255,255,0.6), transparent 75%);
       pointer-events: none;
-      filter: blur(40px);
+      filter: blur(50px);
       transform: translate(-50%, -50%);
-      z-index: 999;
+      z-index: 1;
     }
 
-    /* ===== ML & Deep Buttons ===== */
-    .top-buttons {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
+    /* ===== Container ===== */
+    .container {
       display: flex;
-      gap: 20px;
-      z-index: 1000;
+      gap: 60px;
+      z-index: 2;
     }
 
-    .glass-btn {
-      padding: 14px 34px;
-      border-radius: 40px;
-      background: rgba(255,255,255,0.2);
-      backdrop-filter: blur(12px);
-      color: #fff;
-      font-size: 20px;
-      font-weight: bold;
+    /* ===== Card ===== */
+    .card {
+      width: 260px;
+      height: 320px;
+      border-radius: 30px;
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(255,255,255,0.35);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       text-decoration: none;
-      border: 1px solid rgba(255,255,255,0.4);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      transition: all 0.4s ease;
+      color: #fff;
+      transition: all 0.45s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Glow border */
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      border-radius: 30px;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.8), transparent);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card:hover {
+      transform: translateY(-20px) scale(1.08);
+      box-shadow: 0 0 60px rgba(255,255,255,0.35);
+    }
+
+    .title {
+      font-size: 48px;
+      font-weight: 800;
+      letter-spacing: 3px;
+    }
+
+    .subtitle {
+      margin-top: 10px;
+      font-size: 16px;
+      opacity: 0.85;
       letter-spacing: 1px;
     }
 
-    .glass-btn:hover {
-      transform: scale(1.15);
-      background: rgba(255,255,255,0.35);
-      box-shadow: 0 0 25px rgba(255,255,255,0.9);
+    /* Different glow colors */
+    .ml:hover {
+      box-shadow: 0 0 60px rgba(0, 255, 255, 0.6);
     }
 
-    /* ===== Glass Box ===== */
-    .glass-box {
-      width: 90%;
-      max-width: 1100px;
-      padding: 40px;
-      border-radius: 25px;
-      background: rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(16px);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.35);
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 30px;
-      animation: fadeIn 1.2s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    .circle {
-      text-align: center;
-      animation: float 6s ease-in-out infinite;
-      cursor: pointer;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-12px); }
-    }
-
-    .circle video {
-      width: 140px;
-      height: 140px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid rgba(255, 255, 255, 0.7);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-      transition: all 0.4s ease;
-    }
-
-    .circle:hover video {
-      transform: scale(1.12);
-      box-shadow: 0 0 25px rgba(255,255,255,0.8);
-    }
-
-    .circle p {
-      margin-top: 12px;
-      color: #fff;
-      font-weight: bold;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+    .deep:hover {
+      box-shadow: 0 0 60px rgba(255, 0, 150, 0.6);
     }
   </style>
 </head>
+
 <body>
 
   <div class="light" id="light"></div>
 
-  <!-- ML & Deep Buttons -->
-  <div class="top-buttons">
-    <a href="ml.html" class="glass-btn">ML</a>
-    <a href="deep.html" class="glass-btn">DEEP</a>
-  </div>
+  <div class="container">
+    <a href="ml.html" class="card ml">
+      <div class="title">ML</div>
+      <div class="subtitle">Machine Learning</div>
+    </a>
 
-  <!-- Glass Box -->
-  <div class="glass-box">
-    <a href="industrial.html" class="circle">
-      <video src="Industrial.mp4" autoplay muted loop></video>
-      <p>Industrial</p>
-    </a>
-    <a href="medical.html" class="circle">
-      <video src="Medical project.mp4" autoplay muted loop></video>
-      <p>Medical</p>
-    </a>
-    <a href="banking.html" class="circle">
-      <video src="banking.mp4" autoplay muted loop></video>
-      <p>Finance & Banking</p>
-    </a>
-    <a href="video.html" class="circle">
-      <video src="generated_video.mp4" autoplay muted loop></video>
-      <p>Video Example</p>
-    </a>
-    <a href="farming.html" class="circle">
-      <video src="Smart farming.mp4" autoplay muted loop></video>
-      <p>Smart Farming</p>
+    <a href="deep.html" class="card deep">
+      <div class="title">DEEP</div>
+      <div class="subtitle">Deep Learning</div>
     </a>
   </div>
 
   <script>
     const light = document.getElementById("light");
-    let mouseX = 0, mouseY = 0, x = 0, y = 0;
+    let mx = 0, my = 0, x = 0, y = 0;
 
     document.addEventListener("mousemove", e => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
+      mx = e.clientX;
+      my = e.clientY;
     });
 
     function animate() {
-      x += (mouseX - x) * 0.1;
-      y += (mouseY - y) * 0.1;
+      x += (mx - x) * 0.08;
+      y += (my - y) * 0.08;
       light.style.left = x + "px";
       light.style.top = y + "px";
       requestAnimationFrame(animate);
