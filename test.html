@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ولنتاین مبارک معصومه جان ❤️</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: linear-gradient(135deg, #ffd1d1 0%, #ffe5e5 50%, #ffb6b6 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        .heart-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            color: rgba(255, 80, 80, 0.6);
+            animation: float 6s ease-in infinite;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) scale(1.2);
+                opacity: 0;
+            }
+        }
+        
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 900px;
+            width: 90%;
+            margin: 20px auto;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 50px 20px 50px 20px;
+            padding: 40px 30px;
+            box-shadow: 0 20px 60px rgba(255, 71, 87, 0.3);
+            border: 2px solid rgba(255, 99, 99, 0.3);
+            transition: all 0.5s;
+            animation: cardGlow 3s infinite alternate;
+        }
+        
+        @keyframes cardGlow {
+            0% {
+                box-shadow: 0 20px 60px rgba(255, 71, 87, 0.2);
+                border-color: rgba(255, 99, 99, 0.2);
+            }
+            100% {
+                box-shadow: 0 20px 80px rgba(255, 51, 51, 0.6);
+                border-color: rgba(255, 51, 51, 0.6);
+            }
+        }
+        
+        .title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .title h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #e63946;
+            text-shadow: 3px 3px 0 #ffe5e5, 6px 6px 0 rgba(255, 51, 51, 0.2);
+            margin-bottom: 10px;
+            animation: titlePulse 2s infinite;
+        }
+        
+        @keyframes titlePulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+                text-shadow: 4px 4px 0 #ffe5e5, 8px 8px 0 rgba(255, 51, 51, 0.3);
+            }
+        }
+        
+        .subtitle {
+            font-size: 1.8rem;
+            color: #ff6b6b;
+            font-weight: 700;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .heart-beat {
+            animation: heartbeat 1.2s infinite;
+            display: inline-block;
+        }
+        
+        @keyframes heartbeat {
+            0%, 40%, 80%, 100% {
+                transform: scale(1);
+            }
+            20%, 60% {
+                transform: scale(1.3);
+            }
+        }
+        
+        .name {
+            font-size: 3rem;
+            color: #d00000;
+            background: linear-gradient(45deg, #ff6b6b, #c92a2a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 900;
+        }
+        
+        .rose-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+        
+        .rose {
+            font-size: 3.5rem;
+            animation: sway 3s infinite alternate;
+            display: inline-block;
+            filter: drop-shadow(0 10px 15px rgba(255, 0, 0, 0.3));
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+        
+        .rose:hover {
+            transform: scale(1.3) rotate(10deg);
+        }
+        
+        @keyframes sway {
+            from {
+                transform: rotate(-5deg);
+            }
+            to {
+                transform: rotate(15deg);
+            }
+        }
+        
+        .message-box {
+            background: rgba(255, 230, 230, 0.7);
+            border-radius: 40px 10px 40px 10px;
+            padding: 30px;
+            margin: 30px 0;
+            border-right: 10px solid #ff4d4d;
+            border-left: 10px solid #ff8080;
+            box-shadow: inset 0 0 20px rgba(255, 77, 77, 0.1);
+        }
+        
+        .message {
+            font-size: 1.4rem;
+            line-height: 2.2rem;
+            color: #590d0d;
+            text-align: justify;
+            font-weight: 500;
+        }
+        
+        .message span {
+            display: inline-block;
+            opacity: 0;
+            animation: fadeInWord 0.8s forwards;
+        }
+        
+        @keyframes fadeInWord {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+        }
+        
+        .counter {
+            display: flex;
+            justify-content: space-around;
+            margin: 40px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .counter-item {
+            background: linear-gradient(145deg, #ffcccc, #ffe5e5);
+            padding: 20px;
+            border-radius: 30px;
+            box-shadow: 8px 8px 16px #ffb3b3, -8px -8px 16px #ffffff;
+            text-align: center;
+            min-width: 150px;
+            flex: 1;
+        }
+        
+        .counter-number {
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: #e63946;
+            display: block;
+            line-height: 1;
+        }
+        
+        .counter-label {
+            font-size: 1.1rem;
+            color: #b33c3c;
+            font-weight: 700;
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 40px 0;
+        }
+        
+        .memory {
+            background: white;
+            border-radius: 20px;
+            padding: 20px 10px;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(255, 77, 77, 0.2);
+            transition: all 0.4s;
+            border: 2px solid transparent;
+        }
+        
+        .memory:hover {
+            transform: translateY(-15px) rotate(2deg);
+            border-color: #ff4d4d;
+            box-shadow: 0 20px 30px rgba(255, 77, 77, 0.4);
+        }
+        
+        .memory-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        
+        .memory-text {
+            font-size: 1.1rem;
+            color: #b33939;
+            font-weight: 600;
+        }
+        
+        .love-button {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0 20px;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #ff4d4d, #ff1a1a);
+            border: none;
+            padding: 18px 50px;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-family: 'Vazirmatn', sans-serif;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(255, 26, 26, 0.4);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 2px solid white;
+            letter-spacing: 2px;
+        }
+        
+        .btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 30px rgba(255, 0, 0, 0.6);
+            background: linear-gradient(45deg, #ff1a1a, #ff4d4d);
+        }
+        
+        .btn:active {
+            transform: scale(0.95);
+        }
+        
+        .poem {
+            margin-top: 40px;
+            padding: 25px;
+            background: rgba(255, 214, 214, 0.5);
+            border-radius: 30px;
+            text-align: center;
+            border: 2px dashed #ff6b6b;
+        }
+        
+        .poem p {
+            font-size: 1.3rem;
+            font-style: italic;
+            color: #8b1e1e;
+            line-height: 2.2rem;
+        }
+        
+        .signature {
+            margin-top: 30px;
+            text-align: left;
+            font-size: 1.4rem;
+            color: #c92a2a;
+            font-weight: 700;
+            border-top: 3px dotted #ffa5a5;
+            padding-top: 25px;
+        }
+        
+        @media (max-width: 768px) {
+            .title h1 {
+                font-size: 2.2rem;
+            }
+            
+            .name {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1.3rem;
+            }
+            
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+            
+            .counter-item {
+                min-width: 120px;
+            }
+            
+            .message {
+                font-size: 1.1rem;
+                line-height: 1.8rem;
+            }
+        }
+        
+        .music-note {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 99, 99, 0.8);
+            padding: 15px;
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 100;
+            animation: spin 5s infinite linear;
+            backdrop-filter: blur(5px);
+            border: 2px solid white;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="heart-bg" id="heartBg"></div>
+    
+    <div class="container">
+        <div class="card">
+            <div class="title">
+                <h1>💘 روز ولنتاین 💘</h1>
+                <div class="subtitle">
+                    <span>به نام عشق</span>
+                    <span class="heart-beat">❤️</span>
+                    <span>به تو</span>
+                </div>
+            </div>
+            
+            <div style="text-align: center;">
+                <span class="name">معصومه عزیزم</span>
+                <div style="font-size: 1.5rem; margin-top: 10px; color: #ff6b6b;">
+                    <span class="heart-beat">❤️</span> عشق یکتای من <span class="heart-beat">❤️</span>
+                </div>
+            </div>
+            
+            <div class="rose-container">
+                <span class="rose">🌹</span>
+                <span class="rose">🌷</span>
+                <span class="rose">🌸</span>
+                <span class="rose">🌺</span>
+                <span class="rose">💐</span>
+            </div>
+            
+            <div class="message-box">
+                <div class="message" id="loveMessage">
+                    <!-- Message will be inserted by JS -->
+                </div>
+            </div>
+            
+            <div class="counter">
+                <div class="counter-item">
+                    <span class="counter-number" id="daysSince">❤️</span>
+                    <span class="counter-label">روز از وقتی تو رو دیدم</span>
+                </div>
+                <div class="counter-item">
+                    <span class="counter-number" id="heartBeats">❤️</span>
+                    <span class="counter-label">تپش قلب برای تو</span>
+                </div>
+                <div class="counter-item">
+                    <span class="counter-number" id="smiles">❤️</span>
+                    <span class="counter-label">لبخند با یاد تو</span>
+                </div>
+            </div>
+            
+            <h2 style="text-align: right; color: #b33939; margin-bottom: 20px; border-right: 5px solid #ff4d4d; padding-right: 15px;">
+                💕 خاطرات شیرین ما 💕
+            </h2>
+            
+            <div class="gallery">
+                <div class="memory">
+                    <div class="memory-icon">🥰</div>
+                    <div class="memory-text">اولین دیدار</div>
+                    <div style="color: #ff6b6b; margin-top: 10px;">زیباترین روز</div>
+                </div>
+                <div class="memory">
+                    <div class="memory-icon">😍</div>
+                    <div class="memory-text">اولین لبخندت</div>
+                    <div style="color: #ff6b6b; margin-top: 10px;">دنیا رو زیبا کرد</div>
+                </div>
+                <div class="memory">
+                    <div class="memory-icon">💑</div>
+                    <div class="memory-text">روزهای کنار هم</div>
+                    <div style="color: #ff6b6b; margin-top: 10px;">بهترین لحظات</div>
+                </div>
+            </div>
+            
+            <div class="love-button">
+                <button class="btn" id="loveBtn">
+                    <span>❤️</span>
+                    کلیک کن عشقم
+                    <span>❤️</span>
+                </button>
+            </div>
+            
+            <div class="poem" id="poemContainer">
+                <!-- Poem will be inserted by JS -->
+            </div>
+            
+            <div class="signature">
+                <p>با تمام عشق و وجودم ❤️</p>
+                <p style="font-size: 1.2rem; color: #333;">همیشه عاشقت می‌مونم... [اسم شما]</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="music-note" id="musicNote">
+        🎵
+    </div>
+
+    <script>
+        // Romantic messages for Ma'soume
+        const messages = [
+            "معصومه جانم، عشق من... هر روز که می‌گذره بیشتر از دیروز عاشقت میشم. تو نه فقط عشق منی، تو تمام دنیای منی ❤️",
+            "تو زیباترین اتفاق زندگی منی... قبل از تو دنیا فقط سیاه و سفید بود، تو رنگیش کردی 🎨",
+            "وقتی نیستی، دلم برای لبخندت تنگ میشه... برای صدات، برای نگاه معصومانه‌ات... 🥺",
+            "تو فرشته‌ای که خدا مخصوص من آفرید. شکرت خدایا بابت این همه لطف 🤲❤️",
+            "دوستت دارم نه فقط امروز که روز ولنتاین است... هر روز، هر ساعت، هر دقیقه... تا ابد 💕"
+        ];
+        
+        const poems = [
+            "تو را ای مهربان‌تر از تمام گل‌های جهان \n دوست می‌دارم \n و دلتنگی‌هایم \n همیشه به نام تو ثبت می‌شوند...",
+            "معصومه یعنی تمام خوبی‌های دنیا \n یعنی یک دنیا آرامش در میان طوفان‌ها \n یعنی عشق یعنی زندگی یعنی رویا ❤️"
+        ];
+        
+        // Generate floating hearts
+        function createHearts() {
+            const heartBg = document.getElementById('heartBg');
+            const colors = ['❤️', '🧡', '💛', '💚', '💙', '💜', '🤍'];
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart';
+                    heart.innerHTML = colors[Math.floor(Math.random() * colors.length)];
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.animationDelay = Math.random() * 5 + 's';
+                    heart.style.fontSize = (Math.random() * 30 + 15) + 'px';
+                    heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                    heartBg.appendChild(heart);
+                    
+                    // Remove heart after animation
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 10000);
+                }, i * 200);
+            }
+        }
+        
+        // Typewriter effect for main message
+        function typeWriter(element, text, speed = 50) {
+            let i = 0;
+            element.innerHTML = '';
+            
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+        
+        // Animate counter numbers
+        function animateNumber(element, target, suffix = '') {
+            let current = 0;
+            const increment = Math.ceil(target / 50);
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = target.toLocaleString() + suffix;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = current.toLocaleString() + suffix;
+                }
+            }, 40);
+        }
+        
+        // Set random love message
+        function setRandomMessage() {
+            const messageElement = document.querySelector('.message');
+            const randomIndex = Math.floor(Math.random() * messages.length);
+            typeWriter(messageElement, messages[randomIndex]);
+        }
+        
+        // Set random poem
+        function setRandomPoem() {
+            const poemElement = document.querySelector('#poemContainer');
+            const randomIndex = Math.floor(Math.random() * poems.length);
+            poemElement.innerHTML = `<p style="white-space: pre-line;">${poems[randomIndex]}</p>`;
+        }
+        
+        // Initialize everything
+        window.onload = function() {
+            // Start floating hearts
+            setInterval(createHearts, 8000);
+            createHearts();
+            
+            // Set romantic messages
+            setRandomMessage();
+            setRandomPoem();
+            
+            // Animate counters
+            const daysSince = 200; // Random between 300-800 days
+            const heartBeats = Math.floor(Math.random() * 1000000 + 500000);
+            const smiles = Math.floor(Math.random() * 5000 + 3000);
+            
+            animateNumber(document.getElementById('daysSince'), daysSince, '');
+            animateNumber(document.getElementById('heartBeats'), heartBeats, '');
+            animateNumber(document.getElementById('smiles'), smiles, '');
+        };
+        
+        // Love button click effect
+        document.getElementById('loveBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Create burst of hearts
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart';
+                    heart.innerHTML = '❤️';
+                    heart.style.left = '50%';
+                    heart.style.top = '50%';
+                    heart.style.position = 'fixed';
+                    heart.style.fontSize = (Math.random() * 40 + 20) + 'px';
+                    heart.style.animation = 'none';
+                    heart.style.transform = `translate(-50%, -50%) translate(${Math.random() * 400 - 200}px, ${Math.random() * 400 - 200}px)`;
+                    heart.style.transition = 'all 1s ease';
+                    heart.style.opacity = '1';
+                    heart.style.zIndex = '1000';
+                    
+                    document.body.appendChild(heart);
+                    
+                    setTimeout(() => {
+                        heart.style.opacity = '0';
+                        heart.style.transform += ' scale(2)';
+                        setTimeout(() => heart.remove(), 1000);
+                    }, 50);
+                }, i * 50);
+            }
+            
+            // Change message
+            setRandomMessage();
+            
+            // Show alert
+            setTimeout(() => {
+                alert('❤️ معصومه جان، عشق من! روز ولنتاین بر تو مبارک ❤️\n\nهمیشه خوشبخت باشی عزیز دلم...');
+            }, 300);
+        });
+        
+        // Music note click
+        document.getElementById('musicNote').addEventListener('click', function() {
+            this.style.animation = 'none';
+            this.offsetHeight;
+            this.style.animation = 'spin 5s infinite linear';
+            
+            // Simulate music
+            alert('🎵 آهنگ عشق: "تو که باشی دنیا قشنگه، همه چی سر جاشه... تو که باشی قلبم پر از پروانه‌ست" 🎵');
+        });
+        
+        // Hover effect on name
+        const nameElement = document.querySelector('.name');
+        nameElement.addEventListener('mouseover', function() {
+            this.style.transform = 'scale(1.1)';
+            this.style.transition = 'transform 0.3s';
+        });
+        
+        nameElement.addEventListener('mouseout', function() {
+            this.style.transform = 'scale(1)';
+        });
+        
+        // Add romantic sparkles on click anywhere
+        document.body.addEventListener('click', function(e) {
+            if (!e.target.classList.contains('btn') && !e.target.classList.contains('music-note')) {
+                const sparkle = document.createElement('div');
+                sparkle.innerHTML = '✨';
+                sparkle.style.position = 'fixed';
+                sparkle.style.left = e.clientX + 'px';
+                sparkle.style.top = e.clientY + 'px';
+                sparkle.style.fontSize = '25px';
+                sparkle.style.pointerEvents = 'none';
+                sparkle.style.animation = 'float 1s ease-out forwards';
+                sparkle.style.zIndex = '9999';
+                document.body.appendChild(sparkle);
+                
+                setTimeout(() => sparkle.remove(), 1000);
+            }
+        });
+    </script>
+</body>
+</html>
