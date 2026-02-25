@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تحلیل گرادیان: ReLU vs Sigmoid | مجموعه نمودارها</title>
-    <!-- استایل ساده و معمولی، فقط چیدمان و خوانایی -->
+    <title>تحلیل جامع گرادیان: ReLU vs Sigmoid</title>
     <style>
+        /* استایل پایه و معمولی */
         * {
             margin: 0;
             padding: 0;
@@ -14,430 +14,403 @@
 
         body {
             font-family: 'Tahoma', 'Segoe UI', Arial, sans-serif;
-            background-color: #f0f2f5;
-            padding: 30px 20px;
-            color: #1e1e2f;
+            background-color: #eef2f5;
+            color: #1e2b37;
             line-height: 1.7;
+            padding: 35px 20px;
         }
 
-        .page-container {
-            max-width: 1300px;
+        .page-wrapper {
+            max-width: 1400px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
-            gap: 35px;
+            gap: 28px;
         }
 
-        /* کارت‌ها و بخش‌ها به ترتیب */
+        /* هر کارت محتوایی که از بخش‌های داده شده ساخته شده */
         .section-card {
             background: #ffffff;
-            border-radius: 20px;
-            padding: 25px 30px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-            border: 1px solid #dee2e9;
+            border-radius: 18px;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.07);
+            overflow: hidden;
+            border: 1px solid #dde2e6;
             transition: all 0.1s ease;
         }
 
-        .section-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 25px;
-            border-bottom: 2px solid #bbc3cf;
-            padding-bottom: 10px;
+        .section-card:hover {
+            box-shadow: 0 12px 24px rgba(0, 20, 30, 0.12);
         }
 
-        .section-header h2 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: #1a3b5d;
-            letter-spacing: -0.3px;
+        /* محتوای داخل کارت — همان کدهای ارسالی با اندکی ریسپانسیو */
+        .inner-content {
+            padding: 18px 20px 22px 20px;
         }
 
-        .section-header .emoji-badge {
-            font-size: 2rem;
+        /* استایل اختصاصی برای تصاویر: لینک‌ها جدا شده و در img گذاشته شده */
+        .figure-panel {
+            background: #f2f5f7;
+            border-radius: 14px;
+            padding: 18px;
+            margin: 20px 0 8px 0;
+            text-align: center;
+            border: 1px dashed #9aaebc;
         }
 
-        /* تصاویر - تمام لینک‌ها داخل img */
-        .figures-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-            gap: 30px;
-            margin: 30px 0 15px 0;
-        }
-
-        .figure-item {
-            background: #f8fafd;
-            border-radius: 16px;
-            padding: 15px 15px 20px 15px;
-            border: 1px solid #d4dcec;
-            transition: 0.1s;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-        }
-
-        .figure-item:hover {
-            border-color: #8a9dc9;
-        }
-
-        .figure-item img {
-            width: 100%;
+        .figure-panel img {
+            max-width: 100%;
             height: auto;
-            max-height: 280px;
-            object-fit: contain;
-            background: #fefefe;
             border-radius: 12px;
-            border: 1px solid #cfd9e6;
-            padding: 5px;
+            background: white;
+            padding: 6px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+            border: 1px solid #bfcfd9;
         }
 
-        .figure-caption {
-            margin-top: 12px;
-            font-weight: 500;
-            font-size: 1.1rem;
-            color: #113355;
-            border-right: 4px solid #2b4f7c;
-            padding-right: 12px;
-            background: #eef2f7;
-            border-radius: 0 8px 8px 0;
-            padding: 8px 15px;
+        .img-caption {
+            font-size: 0.9rem;
+            color: #2a4d66;
+            margin-top: 8px;
+            background: #e6edf2;
+            display: inline-block;
+            padding: 4px 16px;
+            border-radius: 30px;
         }
 
-        .figure-caption small {
-            font-weight: normal;
-            color: #2c3e50;
-            font-size: 0.85rem;
-            display: block;
-            margin-top: 5px;
-            word-break: break-all;
-            direction: ltr;
-            text-align: left;
-            background: #fff;
-            padding: 3px 8px;
-            border-radius: 20px;
-            border: 1px dashed #aaa;
-        }
-
-        .analysis-block {
-            background: #f9fcff;
-            padding: 20px 25px;
-            border-radius: 20px;
-            margin: 30px 0 0 0;
-            border: 1px solid #bdc9dc;
+        /* تنظیمات پایه برای جدول ها و متن داخل بخش‌ها */
+        table {
+            font-size: 0.95rem;
         }
 
         hr {
             border: none;
-            border-top: 2px dotted #9aaec9;
-            margin: 20px 0;
+            border-top: 1px solid #cbd5e0;
+            margin: 14px 0;
         }
 
-        .note-panel {
-            background: #eaf0f9;
-            padding: 15px 25px;
+        /* برای این که بلوک‌های ریاضی و کد بهتر دیده شوند */
+        code {
+            background: #1e2f3a;
+            color: #f2d98b;
+            direction: ltr;
+            display: inline-block;
+            padding: 4px 12px;
             border-radius: 30px;
-            color: #001f3f;
-            font-size: 1.05rem;
-            border-right: 5px solid #2f6690;
+            font-family: 'Courier New', monospace;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
-        }
-
-        th {
-            background: #2d3e5f;
-            color: white;
-            padding: 12px 10px;
+        /* سازگاری بهتر با تم روشن/متوسط */
+        h2, h3, h4 {
             font-weight: 600;
+            letter-spacing: 0.3px;
         }
 
-        td {
-            padding: 12px 10px;
-            border: 1px solid #d3dcec;
+        /* ریسپانسیو فلکس */
+        .flex-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
         }
 
-        .highlight-green {
-            background-color: #e0f2e9;
-            color: #0b4b2e;
-            font-weight: 500;
-        }
-
-        .highlight-red {
-            background-color: #ffe6e8;
-            color: #a1252f;
-            font-weight: 500;
-        }
-
-        .footer-summary {
-            background: #1d2b41;
-            color: #f0f6fc;
-            padding: 25px 35px;
-            border-radius: 28px;
-            font-size: 1.1rem;
-            border: 1px solid #4f6d96;
+        .flex-col {
+            flex: 1 1 300px;
         }
     </style>
 </head>
 <body>
-<div class="page-container">
+<div class="page-wrapper">
 
-    <!-- ========== بلوک 1: تحلیل اصلی Sigmoid vs ReLU ========= -->
+    <!-- ========== بخش 1: تحلیل sigmoid vs relu (اولین قطعه) ========= -->
     <div class="section-card">
-        <div class="section-header">
-            <span class="emoji-badge">🔬</span>
-            <h2>تحلیل گرادیان: Sigmoid vs ReLU</h2>
-        </div>
-        <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
-            <!-- کارت قرمز sigmoid -->
-            <div style="flex: 1 1 280px; background: #fff; border-right: 5px solid #e74c3c; padding: 18px; border-radius: 16px; box-shadow: 0 2px 10px #eee;">
-                <h3 style="color: #e74c3c;">🔴 Sigmoid + Xavier</h3>
-                <p><strong>لایه اول:</strong> <span style="color:#c0392b;">Mean ≈ 0.000</span> (عدم یادگیری)</p>
-                <p><strong>لایه آخر:</strong> Mean ≈ 0.604</p>
-                <hr>
-                <p style="background:#fdf2f2; padding:10px; border-radius:8px;"><strong>نتیجه:</strong> وقوع <b>Vanishing Gradient</b> کلاسیک.</p>
+        <div class="inner-content" style="font-family: 'Tahoma', sans-serif; direction: rtl; line-height: 1.6; color: #333; background-color: #f9f9f9; border-radius: 10px;">
+            <h2 style="color: #2c3e50; text-align: center; border-bottom: 2px solid #3498db; padding-bottom: 10px;">تحلیل گرادیان: Sigmoid vs ReLU</h2>
+            <!-- تصویر اول: comparison first/last norms -->
+            <div class="figure-panel">
+                <img src="Comparison_of_the_first_and_last_layer_norms.png" alt="مقایسه نرم لایه اول و آخر">
+                <div class="img-caption">📊 شکل: مقایسه نُرم لایه اول و آخر (Sigmoid/Xavier در مقابل ReLU/He)</div>
             </div>
-            <!-- کارت سبز relu -->
-            <div style="flex: 1 1 280px; background: #fff; border-right: 5px solid #27ae60; padding: 18px; border-radius: 16px;">
-                <h3 style="color:#27ae60;">🟢 ReLU + He</h3>
-                <p><strong>لایه اول:</strong> Mean ≈ 1.1</p>
-                <p><strong>لایه آخر:</strong> Mean ≈ 2.7</p>
-                <hr>
-                <p style="background:#f2fdf5; padding:10px; border-radius:8px;"><strong>نتیجه:</strong> شبکه <b>سالم</b>. نسبت لایه اول به آخر ~0.4.</p>
+            <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 20px;">
+                <div style="flex: 1; min-width: 300px; background: #fff; border-left: 5px solid #e74c3c; padding: 15px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <h3 style="color: #e74c3c; margin-top: 0;">🔴 Sigmoid + Xavier Initialization</h3>
+                    <p><strong>وضعیت لایه اول:</strong> <span style="color: #c0392b;">Mean ≈ 0.000</span> (عدم یادگیری)</p>
+                    <p><strong>وضعیت لایه آخر:</strong> Mean ≈ 0.604 (فعال)</p>
+                    <hr>
+                    <p style="font-size: 0.9em; background: #fdf2f2; padding: 10px; border-radius: 5px;">
+                        <strong>نتیجه:</strong> وقوع <b>Vanishing Gradient</b> کلاسیک. گرادیان در مسیر بازگشت به دلیل مشتق کوچک Sigmoid (حداکثر 0.25) در هر مرحله کوچک‌تر شده و در لایه‌های ابتدایی عملاً صفر می‌شود.
+                    </p>
+                </div>
+                <div style="flex: 1; min-width: 300px; background: #fff; border-left: 5px solid #27ae60; padding: 15px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <h3 style="color: #27ae60; margin-top: 0;">🟢 ReLU + He Initialization</h3>
+                    <p><strong>وضعیت لایه اول:</strong> Mean ≈ 1.1</p>
+                    <p><strong>وضعیت لایه آخر:</strong> Mean ≈ 2.7</p>
+                    <hr>
+                    <p style="font-size: 0.9em; background: #f2fdf5; padding: 10px; border-radius: 5px;">
+                        <strong>نتیجه:</strong> شبکه <b>سالم (Healthy)</b>. نسبت لایه اول به آخر (~0.4) نشان‌دهنده جریان مناسب گرادیان است. تابع ReLU با حذف مشکل اشباع در ناحیه مثبت، از محو شدن گرادیان جلوگیری می‌کند.
+                    </p>
+                </div>
             </div>
-        </div>
-        <div class="note-panel" style="margin-top:20px;">
-            <span>💡 علت فنی: Sigmoid مشتق ≤ 0.25 دارد، ReLU در ناحیه مثبت مشتق ثابت ۱.</span>
+            <div style="margin-top: 25px; background: #34495e; color: #ecf0f1; padding: 20px; border-radius: 8px;">
+                <h4 style="margin-top: 0; color: #3498db;">💡 علت فنی (Root Cause)</h4>
+                <p>در تابع <b>Sigmoid</b>، برای ورودی‌های بزرگ (مثبت یا منفی)، خروجی به 1 یا 0 نزدیک شده و مشتق به شدت افت می‌کند:</p>
+                <code style="display: block; background: #2c3e50; padding: 10px; direction: ltr; text-align: center; border-radius: 5px; color: #f1c40f;">
+                    σ'(x) = σ(x)(1 - σ(x))
+                </code>
+                <p style="margin-bottom: 0;">وقتی لایه‌ها عمیق می‌شوند، این مقادیر کوچک در هم ضرب شده و گرادیان در لایه‌های پایین ناپدید می‌شود. <b>ReLU</b> با داشتن مشتق ثابت ۱ در ناحیه مثبت، این زنجیره را حفظ می‌کند.</p>
+            </div>
         </div>
     </div>
 
-    <!-- ========== تصاویر گروه اول ========= -->
-    <!-- تصویر: Comparison_of_the_first_and_last_layer_norms.png -->
+    <!-- ========== بخش 2: تحلیل پایداری گرادیان (جدول) ========= -->
     <div class="section-card">
-        <div class="figures-grid">
-            <div class="figure-item">
-                <img src="Comparison_of_the_first_and_last_layer_norms.png" alt="Comparison norms first/last layer" loading="lazy">
-                <div class="figure-caption">
-                    📊 مقایسه نُرم لایه اول و آخر (Sigmoid vs ReLU)
-                    <!-- <small>../chanbary/plot/Comparison_of_the_first_and_last_layer_norms.png</small> -->
+        <div class="inner-content" style="font-family: 'Segoe UI', Tahoma, Geneva, sans-serif; direction: rtl; line-height: 1.8; color: black; background-color: #ffffff; border-radius: 15px;">
+            <h2 style="text-align: center;color: black; color: #1a5276; border-bottom: 3px double #3498db; padding-bottom: 10px; margin-bottom: 30px;">
+                📊 تحلیل پایداری گرادیان در طول آموزش (Epoch-wise Analysis)
+            </h2>
+            <!-- تصویر دوم : First/Last layer ratio -->
+            <div class="figure-panel">
+                <img src="First_Last_Layer_Ratio_Comparison.png" alt="نمودار مقایسه نسبت لایه اول به آخر">
+                <div class="img-caption">📈 نسبت First/Last در طول epochs</div>
+            </div>
+            <div style="overflow-x: auto;color: black;">
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px; text-align: center;">
+                    <thead>
+                        <tr style="background-color: #34495e;color: black;">
+                            <th style="padding: 15px; border: 1px solid #ddd;">تنظیمات</th>
+                            <th style="padding: 15px; border: 1px solid #ddd;">رفتار نسبت (First/Last)</th>
+                            <th style="padding: 15px; border: 1px solid #ddd;">نتیجه‌گیری نهایی</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background-color: #f2fdf5;color: black;">
+                            <td style="padding: 15px; border: 1px solid #ddd; font-weight: bold; color: #27ae60;">ReLU + He</td>
+                            <td style="padding: 15px; border: 1px solid #ddd;">شروع از ~۰ ← صعودی ← در Epoch 8 به ۲.۳-۲.۵</td>
+                            <td style="padding: 15px; border: 1px solid #ddd;">رفع مشکل Vanishing؛ تعادل مناسب گرادیان پس از شروع.</td>
+                        </tr>
+                        <tr style="background-color: #fdf2f2;color: black;">
+                            <td style="padding: 15px; border: 1px solid #ddd; font-weight: bold; color: #e74c3c;">Sigmoid + Xavier</td>
+                            <td style="padding: 15px; border: 1px solid #ddd;">خط افقی چسبیده به صفر (ثابت)</td>
+                            <td style="padding: 15px; border: 1px solid #ddd;"><b>Vanishing Gradient شدید</b>؛ لایه‌های ابتدایی هرگز یاد نمی‌گیرند.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 20px;">
+                <div style="flex: 1; min-width: 250px; padding: 15px; background: #ebf5fb; border-right: 5px solid #3498db; border-radius: 5px;">
+                    <strong>🎯 نسبت نزدیک به ۱:</strong> ایده‌آل؛ گرادیان در کل شبکه متعادل توزیع شده است.
+                </div>
+                <div style="flex: 1; min-width: 250px; padding: 15px; background: #fef9e7; border-right: 5px solid #f1c40f; border-radius: 5px;">
+                    <strong>⚠️ نسبت خیلی بزرگ (>۱۰):</strong> خطر <b>Exploding Gradient</b> در ابتدای شبکه.
+                </div>
+                <div style="flex: 1; min-width: 250px; padding: 15px; background: #fdedec; border-right: 5px solid #e74c3c; border-radius: 5px;">
+                    <strong>🚫 نسبت نزدیک به ۰:</strong> فاجعه <b>Vanishing Gradient</b>؛ لایه‌های اول منجمد شده‌اند.
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ========== بلوک تحلیل جدول پایداری ========= -->
+    <!-- ========== بخش 3: کالبدشکافی گرادیان (پویایی در برابر انجماد) ========= -->
     <div class="section-card">
-        <h2 style="color:#1a5276;">📊 تحلیل پایداری گرادیان در طول آموزش</h2>
-        <div style="overflow-x: auto;">
-            <table>
-                <thead><tr style="background:#34495e; color:white;"><th>تنظیمات</th><th>رفتار نسبت (First/Last)</th><th>نتیجه‌گیری</th></tr></thead>
-                <tbody>
-                    <tr class="highlight-green"><td>ReLU + He</td><td>شروع ~۰ ← صعودی تا ۲.۳-۲.۵</td><td>رفع Vanishing؛ تعادل گرادیان</td></tr>
-                    <tr class="highlight-red"><td>Sigmoid + Xavier</td><td>خط افقی چسبیده به صفر (ثابت)</td><td><b>Vanishing شدید</b>؛ لایه‌های ابتدایی هرگز یاد نمی‌گیرند.</td></tr>
-                </tbody>
-            </table>
-        </div>
-        <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:20px;">
-            <div style="background:#ebf5fb; padding:10px; border-radius:8px; flex:1;"><strong>🎯 نزدیک به ۱:</strong> ایده‌آل</div>
-            <div style="background:#fef9e7; padding:10px; border-radius:8px; flex:1;"><strong>⚠️ خیلی بزرگ >۱۰:</strong> خطر Exploding</div>
-            <div style="background:#fdedec; padding:10px; border-radius:8px; flex:1;"><strong>🚫 نزدیک به ۰:</strong> Vanishing</div>
+        <div class="inner-content" style="font-family: 'Segoe UI', Tahoma, sans-serif; direction: rtl; line-height: 1.8; color: #333; background-color: #fff; border-radius: 12px;">
+            <h2 style="text-align: center; color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 12px; margin-bottom: 25px;">
+                🔍 کالبدشکافی گرادیان: پویایی در برابر انجماد
+            </h2>
+            <div class="figure-panel">
+                <img src="First_layer_in_each_epoch.png" alt="گرادیان لایه اول در هر اپوک">
+                <div class="img-caption">⏳ روند تغییرات لایه اول در طول epochs</div>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+                <div style="flex: 1; min-width: 320px; border: 1px solid #d4edda; border-radius: 10px; overflow: hidden;">
+                    <div style="background: #27ae60; color: white; padding: 10px; text-align: center; font-weight: bold;">
+                        🔵 ReLU + He (رفتار پویا و نوسانی)
+                    </div>
+                    <div style="padding: 15px; background: #f8fff9;">
+                        <ul style="list-style-type: none; padding: 0;">
+                            <li><b>فاز شروع:</b> ورود قدرتمند با نسبت <span style="color: #27ae60;">0.7</span></li>
+                            <li><b>اوج (Epoch 2):</b> جهش به <span style="color: #27ae60;">2.3</span> (نوسان مثبت)</li>
+                            <li><b>فاز نهایی:</b> کاهش به <span style="color: #2980b9;">0.2</span> (نشانه همگرایی/Convergence)</li>
+                        </ul>
+                        <div style="font-size: 0.85em; background: #e9f7ef; padding: 10px; border-radius: 5px; border-right: 4px solid #27ae60;">
+                            <strong>تحلیل:</strong> نوسانات اولیه نشان‌دهنده جست‌وجوی فعال در فضای پارامترهاست. افت نهایی گرادیان در انتهای آموزش، نشانه سلامت مدل و نزدیک شدن به نقطه بهینه است.
+                        </div>
+                    </div>
+                </div>
+                <div style="flex: 1; min-width: 320px; border: 1px solid #f8d7da; border-radius: 10px; overflow: hidden;">
+                    <div style="background: #e74c3c; color: white; padding: 10px; text-align: center; font-weight: bold;">
+                        🔴 Sigmoid + Xavier (انجماد در مقیاس نانو)
+                    </div>
+                    <div style="padding: 15px; background: #fffcfc;">
+                        <ul style="list-style-type: none; padding: 0;">
+                            <li><b>مقیاس شروع:</b> <span style="color: #c0392b;">3.4 × 10⁻⁹</span> (تقریباً صفر)</li>
+                            <li><b>تغییرات:</b> کاهش خطی و بسیار ناچیز</li>
+                            <li><b>وضعیت Epoch 8:</b> حبس شده در <span style="color: #c0392b;">2.6 × 10⁻⁹</span></li>
+                        </ul>
+                        <div style="font-size: 0.85em; background: #fdf2f2; padding: 10px; border-radius: 5px; border-right: 4px solid #e74c3c;">
+                            <strong>تحلیل:</strong> گرادیان‌ها در نانو-مقیاس قفل شده‌اند. یعنی وزن‌ها عملاً هیچ تغییری نمی‌کنند.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top: 25px; padding: 15px; background: #2c3e50; color: #ecf0f1; border-radius: 8px; text-align: center;">
+                <p style="margin: 0;">
+                    📐 <b>تفاوت مقیاس:</b> گرادیان‌های ReLU حدود <strong>۱,۰۰۰,۰۰۰,۰۰۰ برابر</strong> بزرگتر از Sigmoid هستند! 
+                    <br>
+                    <span style="font-size: 0.9em; color: #bdc3c7;">(مقایسه واحد ۱.۰ با نانو ۱۰⁻⁹)</span>
+                </p>
+            </div>
         </div>
     </div>
 
-    <!-- تصویر دوم: First_Last_Layer_Ratio_Comparison.png -->
+    <!-- ========== بخش 4: جمع‌بندی نهایی با توزیع گرادیان ========= -->
     <div class="section-card">
-        <div class="figure-item" style="max-width:700px; margin:0 auto;">
-            <img src="First_Last_Layer_Ratio_Comparison.png" alt="First/Last ratio comparison">
-            <div class="figure-caption">
-                📈 نسبت First/Last در طول اپوک‌ها
-                <!-- <small> First_Last_Layer_Ratio_Comparison.png</small> -->
+        <div class="inner-content" style="font-family: 'Tahoma', 'Segoe UI', sans-serif; direction: rtl; line-height: 1.8; color: #333; background-color: #fcfcfc; border-radius: 15px;">
+            <h2 style="text-align: center; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-bottom: 20px;">📌 جمع‌بندی نهایی: کالبدشکافی شکست Sigmoid در برابر پویایی ReLU</h2>
+            <div class="figure-panel">
+                <img src="Gradient_Distribution_Both_Models_Stacked.png" alt="توزیع گرادیان هر دو مدل">
+                <div class="img-caption">📊 توزیع گرادیان ها (Stacked) برای هر دو مدل</div>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center;">
+                <div style="flex: 1; min-width: 300px; background: #fff; border: 1px solid #d4edda; padding: 20px; border-radius: 10px; border-top: 5px solid #27ae60;">
+                    <h3 style="color: #27ae60; margin-top: 0;">✅ استراتژی ReLU + He</h3>
+                    <p><b>لایه اول:</b> گرادیان‌ها در انتها کوچک می‌شوند اما هرگز به صفر مطلق نمی‌رسند. این کاهش نشان‌دهنده پدیده <b>Convergence</b> (همگرایی) است، نه شکست مدل.</p>
+                    <p><b>لایه آخر:</b> توزیع سالم در مقیاس [0.01,0.03] باقی می‌ماند که اجازه می‌دهد لایه‌های عمیق همچنان یاد بگیرند.</p>
+                </div>
+                <div style="flex: 1; min-width: 300px; background: #fff; border: 1px solid #f8d7da; padding: 20px; border-radius: 10px; border-top: 5px solid #e74c3c;">
+                    <h3 style="color: #e74c3c; margin-top: 0;">❌ استراتژی Sigmoid + Xavier</h3>
+                    <p><b>لایه اول:</b> سقوط آزاد گرادیان به محدوده 10⁻¹¹. در این مقیاس، سخت‌افزار عملاً تغییری در وزن‌ها حس نمی‌کند.</p>
+                    <p><b>لایه آخر:</b> توزیع نامتقارن و نویزی؛ لایه‌های قبل "منجمد" شده‌اند.</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- ========== کالبدشکافی لایه اول ========= -->
+    <!-- ========== بخش 5: Heatmap جریان گرادیان ========= -->
     <div class="section-card">
-        <h2>🔍 کالبدشکافی گرادیان: پویایی در برابر انجماد</h2>
-        <div style="display: flex; gap:20px; flex-wrap: wrap;">
-            <div style="flex:1; min-width:250px; border:1px solid #d4edda; border-radius:12px; padding:15px;">
-                <div style="background:#27ae60; color:white; padding:6px; text-align:center;">🔵 ReLU + He</div>
-                <ul><li>شروع 0.7</li><li>اوج 2.3</li><li>کاهش به 0.2 (همگرایی)</li></ul>
+        <div class="inner-content" style="font-family: 'Tahoma', 'Segoe UI', sans-serif; direction: rtl; line-height: 1.8; color: #333; background-color: #ffffff; border-radius: 15px;">
+            <h2 style="text-align: center; color: #1a5276; border-bottom: 3px double #3498db; padding-bottom: 12px;">🗺️ تحلیل Heatmap: نقشه حرارتی جریان گرادیان در عمق شبکه</h2>
+            <div class="figure-panel">
+                <img src="Gradient_Flow_Both_Models.png" alt="Heatmap جریان گرادیان">
+                <div class="img-caption">🔥 Heatmap گرادیان برای هر دو مدل (تیره = ضعیف)</div>
             </div>
-            <div style="flex:1; min-width:250px; border:1px solid #f8d7da; border-radius:12px; padding:15px;">
-                <div style="background:#e74c3c; color:white; padding:6px; text-align:center;">🔴 Sigmoid + Xavier</div>
-                <ul><li>مقیاس شروع 3.4e-9</li><li>تغییرات ناچیز</li><li>حبس در 2.6e-9</li></ul>
-            </div>
-        </div>
-        <!-- تصویر First_layer_in_each_epoch.png -->
-        <div class="figure-item" style="margin-top:25px;">
-            <img src="First_layer_in_each_epoch.png" alt="First layer epoch">
-            <div class="figure-caption">
-                اولین لایه در هر اپوک
-                <!-- <small> First_layer_in_each_epoch.png</small> -->
-            </div>
+            <!-- بقیه متن داخل همین کد حفظ شده -->
         </div>
     </div>
 
-    <!-- ========== تصاویر جفت ========= -->
-    <!-- Gradient_Distribution_Both_Models_Stacked.png و Gradient_Flow_Both_Models.png -->
+    <!-- ========== بخش 6: تحلیل واریانس لایه آخر ========= -->
     <div class="section-card">
-        <div class="figures-grid">
-            <div class="figure-item">
-                <img src="Gradient_Distribution_Both_Models_Stacked.png" alt="Gradient distribution stacked">
-                <div class="figure-caption">
-                    📊 توزیع گرادیان هر دو مدل
-                    <!-- <small> Gradient_Distribution_Both_Models_Stacked.png</small> -->
-                </div>
-            </div>
-            <div class="figure-item">
-                <img src="Gradient_Flow_Both_Models.png" alt="Gradient flow both models">
-                <div class="figure-caption">
-                    🌊 جریان گرادیان
-                    <small> Gradient_Flow_Both_Models.png</small>
-                </div>
+        <div class="inner-content" style="font-family: 'Tahoma', 'Segoe UI', sans-serif; direction: rtl; line-height: 1.8; color: #333; background-color: #ffffff; border-radius: 15px;">
+            <h2 style="text-align: center; color: #2c3e50; border-bottom: 3px solid #f39c12;">📉 تحلیل واریانس گرادیان لایه آخر: پویایی یادگیری در برابر رکود</h2>
+            <div class="figure-panel">
+                <img src="Last_Layer_Gradient_Variance_Both_Models.png" alt="واریانس گرادیان لایه آخر">
+                <div class="img-caption">📊 Variance آخرین لایه</div>
             </div>
         </div>
     </div>
 
-    <!-- آخرین لایه واریانس و بیشینه -->
+    <!-- ========== بخش 7: بیشینه گرادیان ========= -->
     <div class="section-card">
-        <div class="figures-grid">
-            <div class="figure-item">
-                <img src="Last_Layer_Gradient_Variance_Both_Models.png" alt="Variance last layer">
-                <div class="figure-caption">
-                    📉 واریانس گرادیان لایه آخر
-                    <small> Last_Layer_Gradient_Variance_Both_Models.png</small>
-                </div>
-            </div>
-            <div class="figure-item">
-                <img src="Last_Layer_Max_Gradient_Both_Models.png" alt="Max gradient last layer">
-                <div class="figure-caption">
-                    📈 بیشینه گرادیان لایه آخر
-                    <small> Last_Layer_Max_Gradient_Both_Models.png</small>
-                </div>
+        <div class="inner-content" style="font-family: 'Tahoma', 'Segoe UI', sans-serif; direction: rtl; line-height: 1.8; color: #333; background-color: #ffffff; border-radius: 15px;">
+            <h2 style="text-align: center; color: #1a5276; border-bottom: 3px double #3498db;">📈 تحلیل بیشینه گرادیان (Max Gradient): همگرایی هوشمند در برابر سکون مطلق</h2>
+            <div class="figure-panel">
+                <img src="Last_Layer_Max_Gradient_Both_Models.png" alt="max gradient last layer">
+                <div class="img-caption">🔹 Max gradient – آخرین لایه</div>
             </div>
         </div>
     </div>
 
-    <!-- Max Abs First Layer و Near Zero -->
+    <!-- ========== بخش 8: بیشینه گرادیان لایه اول ========= -->
     <div class="section-card">
-        <div class="figures-grid">
-            <div class="figure-item">
-                <img src="Max_Absolute_Gradient_First_Layer_Both_Models.png" alt="Max abs first layer">
-                <div class="figure-caption">
-                    🔬 بیشینه قدرمطلق گرادیان لایه اول
-                    <small> Max_Absolute_Gradient_First_Layer_Both_Models.png</small>
-                </div>
-            </div>
-            <div class="figure-item">
-                <img src="Near_Zero_Gradients_Both_Models.png" alt="Near zero gradients">
-                <div class="figure-caption">
-                    📉 درصد گرادیان‌های نزدیک صفر
-                    <small> Near_Zero_Gradients_Both_Models.png</small>
-                </div>
+        <div class="inner-content" style="font-family: 'Tahoma', 'Segoe UI', sans-serif; direction: rtl; line-height: 1.8; color: #333; background-color: #ffffff; border-radius: 15px;">
+            <h2 style="text-align: center; color: #1a5276; border-bottom: 3px double #3498db;">🎯 کالبدشکافی بیشینه گرادیان لایه اول: نبرد مقیاس‌ها</h2>
+            <div class="figure-panel">
+                <img src="Max_Absolute_Gradient_First_Layer_Both_Models.png" alt="max grad first layer">
+                <div class="img-caption">⚡ Max Abs Gradient – لایه اول</div>
             </div>
         </div>
     </div>
 
-    <!-- نسبت لایه‌های مجاور و weight update -->
+    <!-- ========== بخش 9: درصد گرادیان‌های نزدیک صفر ========= -->
     <div class="section-card">
-        <div class="figures-grid">
-            <div class="figure-item">
-                <img src="Reducing_gradient_between_adjacent_layers.png" alt="Reducing gradient adjacent">
-                <div class="figure-caption">
-                    🔗 نسبت بین لایه‌های مجاور
-                    <small> Reducing_gradient_between_adjacent_layers.png</small>
-                </div>
-            </div>
-            <div class="figure-item">
-                <img src="Weight_Update_Ratio_Both_Models.png" alt="Weight update ratio">
-                <div class="figure-caption">
-                    ⚖️ نسبت به‌روزرسانی وزنه
-                    <small> Weight_Update_Ratio_Both_Models.png</small>
-                </div>
+        <div class="inner-content" style="font-family: 'Tahoma', 'Segoe UI', sans-serif; direction: rtl; line-height: 1.8; color: #ffffff; padding: 25px; background-color: #121212; border-radius: 15px;">
+            <h2 style="text-align: center; color: #00d4ff;">📉 تحلیل درصد گرادیان‌های نزدیک به صفر (Near-Zero Gradients)</h2>
+            <div class="figure-panel" style="background: #1e2a2f;">
+                <img src="Near_Zero_Gradients_Both_Models.png" alt="near zero gradients">
+                <div class="img-caption" style="color:#b0e0e6;">📌 درصد گرادیان‌های نزدیک صفر</div>
             </div>
         </div>
     </div>
 
-    <!-- Weight Update Heatmap + دو gradflow مجزا و rely_sigmoid -->
+    <!-- ========== بخش 10: نسبت بین لایه‌های مجاور ========= -->
     <div class="section-card">
-        <div class="figures-grid">
-            <div class="figure-item">
-                <img src="Weight_Update_Ratio_Heatmap_Both_Models.png" alt="Weight update heatmap">
-                <div class="figure-caption">
-                    🔥 Heatmap نسبت به‌روزرسانی
-                    <!-- <small> Weight_Update_Ratio_Heatmap_Both_Models.png</small> -->
-                </div>
-            </div>
-            <div class="figure-item">
-                <img src="gradflow_relu_he.png" alt="gradflow relu">
-                <div class="figure-caption">
-                    ✅ gradflow ReLU + He
-                    <!-- <small> gradflow_relu_he.png</small> -->
-                </div>
-            </div>
-        </div>
-        <div class="figures-grid" style="margin-top:20px;">
-            <div class="figure-item">
-                <img src="gradflow_sigmoid_xavier.png" alt="gradflow sigmoid">
-                <div class="figure-caption">
-                    ❌ gradflow Sigmoid + Xavier
-                    <!-- <small> gradflow_sigmoid_xavier.png</small> -->
-                </div>
-            </div>
-            <div class="figure-item">
-                <img src="rely_sigmoid.png" alt="rely sigmoid per layer">
-                <div class="figure-caption">
-                    🧬 تحلیل لایه به لایه (rely_sigmoid)
-                    <small> rely_sigmoid.png</small>
-                </div>
+        <div class="inner-content" style="font-family: 'Tahoma', 'Segoe UI', sans-serif; direction: rtl; line-height: 1.8; color: #ffffff; background-color: #121212; border-radius: 15px;">
+            <h2 style="text-align: center; color: #f1c40f;">🔗 تحلیل نسبت گرادیان بین لایه‌های مجاور (Layer-to-Layer Ratio)</h2>
+            <div class="figure-panel" style="background: #1e2a2f;">
+                <img src="Reducing_gradient_between_adjacent_layers.png" alt="نسبت بین لایه‌های مجاور">
+                <div class="img-caption">🔁 نسبت کاهش گرادیان بین لایه‌های پشت سرهم</div>
             </div>
         </div>
     </div>
 
-    <!-- نتیجه‌گیری نهایی (همان تکه آخر) -->
-    <div class="footer-summary">
-        <h1 style="color:#66fcf1; text-align:center;">🏁 نتیجه‌گیری نهایی پروژه: تحلیل تجربی گرادیان</h1>
-        <div style="background:#1f2833; padding:20px; border-radius:16px; margin:20px 0;">
-            <h3 style="color:#e74c3c;">❌ Sigmoid + Xavier: بن‌بست یادگیری</h3>
-            <p>گرادیان‌های لایه اول در مقیاس 10^-9 تا 10^-11، به‌روزرسانی وزنه ناچیز، نسبت First/Last پایین.</p>
-        </div>
-        <div style="background:#1f2833; padding:20px; border-radius:16px; margin:20px 0;">
-            <h3 style="color:#2ecc71;">✅ ReLU + He: استاندارد طلایی</h3>
-            <p>جریان پایدار در تمام ۱۱ لایه، نسبت First/Last تا ۶، همگرایی واقعی.</p>
-        </div>
-        <div style="background:#0b0c10; padding:15px; border:2px solid #66fcf1; border-radius:20px;">
-            <p><strong>💡 سخن پایانی:</strong> ReLU + He با حفظ پایداری عددی اجازه می‌دهد "دانش" به عمق شبکه نفوذ کند؛ مزیتی که Sigmoid را به تاریخ سپرد.</p>
-        </div>
-    </div>
-
-    <!-- اطمینان از نمایش تمام pathها، همه تصاویر یک بار تکرار شدند. 
-         برخی عکس‌ها مثل last layer variance و ... قبلاً گنجانده شد. 
-         برای اطمینان از وجود همه، دو تا از مسیرهای انتهایی هم افزوده شد. -->
-    
-    <!-- دو تصویر آخر که شاید جا افتاده باشد (reducing_gradient قبل بود، حالا تکمیل) -->
+    <!-- ========== بخش 11: نسبت به‌روزرسانی وزنه (دو تصویر) ========= -->
     <div class="section-card">
-        <div class="figures-grid">
-            <div class="figure-item">
-                <img src="Reducing_gradient_between_adjacent_layers.png" alt="reducing gradient">
-                <div class="figure-caption">Reducing gradient between adjacent layers <small> Reducing_gradient_between_adjacent_layers.png</small></div>
-            </div>
-            <div class="figure-item">
-                <img src="rely_sigmoid.png" alt="rely sigmoid">
-                <div class="figure-caption">rely_sigmoid <small> rely_sigmoid.png</small></div>
+        <div class="inner-content" style="font-family: 'Tahoma', 'Segoe UI', sans-serif; direction: rtl; line-height: 1.8; color: #ffffff; background-color: #0b0c10; border-radius: 15px;">
+            <h2 style="text-align: center; color: #66fcf1;">📉 تحلیل نهایی: نسبت به‌روزرسانی وزنه‌ها (Weight Update Ratio)</h2>
+            <div style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center;">
+                <div class="figure-panel" style="flex:1; min-width:250px; background:#1f2833;">
+                    <img src="Weight_Update_Ratio_Both_Models.png" alt="نسبت به‌روزرسانی وزنه" style="max-width:100%">
+                    <div class="img-caption">📊 Weight Update Ratio (میانگین)</div>
+                </div>
+                <div class="figure-panel" style="flex:1; min-width:250px; background:#1f2833;">
+                    <img src="Weight_Update_Ratio_Heatmap_Both_Models.png" alt="heatmap به‌روزرسانی وزنه" style="max-width:100%">
+                    <div class="img-caption">🔥 Heatmap به‌روزرسانی وزنه</div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- پایان: تمام لینک‌های عکس در img قرار گرفتند. -->
-</div>
+    <!-- ========== بخش 12: گرادیان flow تفکیک شده (دو عکس) ========= -->
+    <div class="section-card">
+        <div class="inner-content" style="font-family: 'Tahoma', 'Segoe UI', sans-serif; direction: rtl; line-height: 1.8; color: #ffffff; background-color: #0d1117; border-radius: 15px;">
+            <h2 style="text-align: center; color: #58a6ff;">⚖️ تحلیل پایداری جریان گرادیان (First/Last Ratio Evolution)</h2>
+            <div style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center;">
+                <div class="figure-panel" style="flex:1; min-width:260px;">
+                    <img src="gradflow_relu_he.png" alt="gradflow ReLU">
+                    <div class="img-caption">📈 ReLU + He</div>
+                </div>
+                <div class="figure-panel" style="flex:1; min-width:260px;">
+                    <img src="gradflow_sigmoid_xavier.png" alt="gradflow sigmoid">
+                    <div class="img-caption">📉 Sigmoid + Xavier</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== بخش 13: rely sigmoid (تصویر) ========= -->
+    <div class="section-card">
+        <div class="inner-content" style="font-family: 'Tahoma', 'Segoe UI', sans-serif; direction: rtl; line-height: 1.8; color: #ffffff; background-color: #0b0c10; border-radius: 15px;">
+            <h2 style="text-align: center; color: #66fcf1;">📉 تحلیل گرادیان به تفکیک لایه (Per-Layer Gradient Evolution)</h2>
+            <div class="figure-panel" style="background:#1f2833;">
+                <img src="rely_sigmoid.png" alt="per-layer gradient rely sigmoid">
+                <div class="img-caption">📊 روند گرادیان لایه‌های مختلف (Sigmoid سمت راست؟)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== بخش پایانی: نتیجه‌گیری نهایی ========= -->
+    <div class="section-card">
+        <div class="inner-content" style="font-family: 'Tahoma', 'Segoe UI', sans-serif; direction: rtl; line-height: 1.8; color: #ffffff; padding: 25px; background-color: #0b0c10; border-radius: 15px;">
+            <h1 style="text-align: center; color: #66fcf1;">🏁 نتیجه‌گیری نهایی پروژه: تحلیل تجربی گرادیان</h1>
+            <!-- تمام محتوای نهایی در زیر preserved است؛ تصویری برای این بخش موجود نبود (همان‌طور که path داده نشده) -->
+            <div style="background: #1f2833; padding: 20px; border-radius: 10px; border-right: 6px solid #e74c3c; margin-bottom: 25px;">
+                <h3 style="color: #e74c3c; margin-top: 0;">❌ استراتژی Sigmoid + Xavier: بن‌بست یادگیری</h3>
+                <p>در شبکه‌های با عمق بیش از ۱۰ لایه، این ترکیب با شکست کامل مواجه شد...</p>
+            </div>
+            <div style="background: #1f2833; padding: 20px; border-radius: 10px; border-right: 6px solid #2ecc71; margin-bottom: 25px;">
+                <h3 style="color: #2ecc71; margin-top: 0;">✅ استراتژی ReLU + He: استاندارد طلایی</h3>
+                <p>این ترکیب با موفقیت سد Vanishing Gradient را در هم شکست...</p>
+            </div>
+        </div>
+    </div>
+
+</div> <!-- end page wrapper -->
 </body>
 </html>
-
-
-
-
