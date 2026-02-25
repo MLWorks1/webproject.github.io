@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحلیل گرادیان: ReLU vs Sigmoid | مجموعه نمودارها</title>
+    <!-- استایل ساده و معمولی، فقط چیدمان و خوانایی -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tahoma', 'Segoe UI', Arial, sans-serif;
+            background-color: #f0f2f5;
+            padding: 30px 20px;
+            color: #1e1e2f;
+            line-height: 1.7;
+        }
+
+        .page-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 35px;
+        }
+
+        /* کارت‌ها و بخش‌ها به ترتیب */
+        .section-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 25px 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #dee2e9;
+            transition: all 0.1s ease;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #bbc3cf;
+            padding-bottom: 10px;
+        }
+
+        .section-header h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #1a3b5d;
+            letter-spacing: -0.3px;
+        }
+
+        .section-header .emoji-badge {
+            font-size: 2rem;
+        }
+
+        /* تصاویر - تمام لینک‌ها داخل img */
+        .figures-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 30px;
+            margin: 30px 0 15px 0;
+        }
+
+        .figure-item {
+            background: #f8fafd;
+            border-radius: 16px;
+            padding: 15px 15px 20px 15px;
+            border: 1px solid #d4dcec;
+            transition: 0.1s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+
+        .figure-item:hover {
+            border-color: #8a9dc9;
+        }
+
+        .figure-item img {
+            width: 100%;
+            height: auto;
+            max-height: 280px;
+            object-fit: contain;
+            background: #fefefe;
+            border-radius: 12px;
+            border: 1px solid #cfd9e6;
+            padding: 5px;
+        }
+
+        .figure-caption {
+            margin-top: 12px;
+            font-weight: 500;
+            font-size: 1.1rem;
+            color: #113355;
+            border-right: 4px solid #2b4f7c;
+            padding-right: 12px;
+            background: #eef2f7;
+            border-radius: 0 8px 8px 0;
+            padding: 8px 15px;
+        }
+
+        .figure-caption small {
+            font-weight: normal;
+            color: #2c3e50;
+            font-size: 0.85rem;
+            display: block;
+            margin-top: 5px;
+            word-break: break-all;
+            direction: ltr;
+            text-align: left;
+            background: #fff;
+            padding: 3px 8px;
+            border-radius: 20px;
+            border: 1px dashed #aaa;
+        }
+
+        .analysis-block {
+            background: #f9fcff;
+            padding: 20px 25px;
+            border-radius: 20px;
+            margin: 30px 0 0 0;
+            border: 1px solid #bdc9dc;
+        }
+
+        hr {
+            border: none;
+            border-top: 2px dotted #9aaec9;
+            margin: 20px 0;
+        }
+
+        .note-panel {
+            background: #eaf0f9;
+            padding: 15px 25px;
+            border-radius: 30px;
+            color: #001f3f;
+            font-size: 1.05rem;
+            border-right: 5px solid #2f6690;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+        }
+
+        th {
+            background: #2d3e5f;
+            color: white;
+            padding: 12px 10px;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px 10px;
+            border: 1px solid #d3dcec;
+        }
+
+        .highlight-green {
+            background-color: #e0f2e9;
+            color: #0b4b2e;
+            font-weight: 500;
+        }
+
+        .highlight-red {
+            background-color: #ffe6e8;
+            color: #a1252f;
+            font-weight: 500;
+        }
+
+        .footer-summary {
+            background: #1d2b41;
+            color: #f0f6fc;
+            padding: 25px 35px;
+            border-radius: 28px;
+            font-size: 1.1rem;
+            border: 1px solid #4f6d96;
+        }
+    </style>
+</head>
+<body>
+<div class="page-container">
+
+    <!-- ========== بلوک 1: تحلیل اصلی Sigmoid vs ReLU ========= -->
+    <div class="section-card">
+        <div class="section-header">
+            <span class="emoji-badge">🔬</span>
+            <h2>تحلیل گرادیان: Sigmoid vs ReLU</h2>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
+            <!-- کارت قرمز sigmoid -->
+            <div style="flex: 1 1 280px; background: #fff; border-right: 5px solid #e74c3c; padding: 18px; border-radius: 16px; box-shadow: 0 2px 10px #eee;">
+                <h3 style="color: #e74c3c;">🔴 Sigmoid + Xavier</h3>
+                <p><strong>لایه اول:</strong> <span style="color:#c0392b;">Mean ≈ 0.000</span> (عدم یادگیری)</p>
+                <p><strong>لایه آخر:</strong> Mean ≈ 0.604</p>
+                <hr>
+                <p style="background:#fdf2f2; padding:10px; border-radius:8px;"><strong>نتیجه:</strong> وقوع <b>Vanishing Gradient</b> کلاسیک.</p>
+            </div>
+            <!-- کارت سبز relu -->
+            <div style="flex: 1 1 280px; background: #fff; border-right: 5px solid #27ae60; padding: 18px; border-radius: 16px;">
+                <h3 style="color:#27ae60;">🟢 ReLU + He</h3>
+                <p><strong>لایه اول:</strong> Mean ≈ 1.1</p>
+                <p><strong>لایه آخر:</strong> Mean ≈ 2.7</p>
+                <hr>
+                <p style="background:#f2fdf5; padding:10px; border-radius:8px;"><strong>نتیجه:</strong> شبکه <b>سالم</b>. نسبت لایه اول به آخر ~0.4.</p>
+            </div>
+        </div>
+        <div class="note-panel" style="margin-top:20px;">
+            <span>💡 علت فنی: Sigmoid مشتق ≤ 0.25 دارد، ReLU در ناحیه مثبت مشتق ثابت ۱.</span>
+        </div>
+    </div>
+
+    <!-- ========== تصاویر گروه اول ========= -->
+    <!-- تصویر: Comparison_of_the_first_and_last_layer_norms.png -->
+    <div class="section-card">
+        <div class="figures-grid">
+            <div class="figure-item">
+                <img src="/kaggle/input/datasets/abolfazluk/picture-data/Comparison_of_the_first_and_last_layer_norms.png" alt="Comparison norms first/last layer" loading="lazy">
+                <div class="figure-caption">
+                    📊 مقایسه نُرم لایه اول و آخر (Sigmoid vs ReLU)
+                    <small>/kaggle/input/datasets/abolfazluk/picture-data/Comparison_of_the_first_and_last_layer_norms.png</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== بلوک تحلیل جدول پایداری ========= -->
+    <div class="section-card">
+        <h2 style="color:#1a5276;">📊 تحلیل پایداری گرادیان در طول آموزش</h2>
+        <div style="overflow-x: auto;">
+            <table>
+                <thead><tr style="background:#34495e; color:white;"><th>تنظیمات</th><th>رفتار نسبت (First/Last)</th><th>نتیجه‌گیری</th></tr></thead>
+                <tbody>
+                    <tr class="highlight-green"><td>ReLU + He</td><td>شروع ~۰ ← صعودی تا ۲.۳-۲.۵</td><td>رفع Vanishing؛ تعادل گرادیان</td></tr>
+                    <tr class="highlight-red"><td>Sigmoid + Xavier</td><td>خط افقی چسبیده به صفر (ثابت)</td><td><b>Vanishing شدید</b>؛ لایه‌های ابتدایی هرگز یاد نمی‌گیرند.</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:20px;">
+            <div style="background:#ebf5fb; padding:10px; border-radius:8px; flex:1;"><strong>🎯 نزدیک به ۱:</strong> ایده‌آل</div>
+            <div style="background:#fef9e7; padding:10px; border-radius:8px; flex:1;"><strong>⚠️ خیلی بزرگ >۱۰:</strong> خطر Exploding</div>
+            <div style="background:#fdedec; padding:10px; border-radius:8px; flex:1;"><strong>🚫 نزدیک به ۰:</strong> Vanishing</div>
+        </div>
+    </div>
+
+    <!-- تصویر دوم: First_Last_Layer_Ratio_Comparison.png -->
+    <div class="section-card">
+        <div class="figure-item" style="max-width:700px; margin:0 auto;">
+            <img src="/kaggle/input/datasets/abolfazluk/picture-data/First_Last_Layer_Ratio_Comparison.png" alt="First/Last ratio comparison">
+            <div class="figure-caption">
+                📈 نسبت First/Last در طول اپوک‌ها
+                <small>/kaggle/input/datasets/abolfazluk/picture-data/First_Last_Layer_Ratio_Comparison.png</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== کالبدشکافی لایه اول ========= -->
+    <div class="section-card">
+        <h2>🔍 کالبدشکافی گرادیان: پویایی در برابر انجماد</h2>
+        <div style="display: flex; gap:20px; flex-wrap: wrap;">
+            <div style="flex:1; min-width:250px; border:1px solid #d4edda; border-radius:12px; padding:15px;">
+                <div style="background:#27ae60; color:white; padding:6px; text-align:center;">🔵 ReLU + He</div>
+                <ul><li>شروع 0.7</li><li>اوج 2.3</li><li>کاهش به 0.2 (همگرایی)</li></ul>
+            </div>
+            <div style="flex:1; min-width:250px; border:1px solid #f8d7da; border-radius:12px; padding:15px;">
+                <div style="background:#e74c3c; color:white; padding:6px; text-align:center;">🔴 Sigmoid + Xavier</div>
+                <ul><li>مقیاس شروع 3.4e-9</li><li>تغییرات ناچیز</li><li>حبس در 2.6e-9</li></ul>
+            </div>
+        </div>
+        <!-- تصویر First_layer_in_each_epoch.png -->
+        <div class="figure-item" style="margin-top:25px;">
+            <img src="/kaggle/input/datasets/abolfazluk/picture-data/First_layer_in_each_epoch.png" alt="First layer epoch">
+            <div class="figure-caption">
+                اولین لایه در هر اپوک
+                <small>/kaggle/input/datasets/abolfazluk/picture-data/First_layer_in_each_epoch.png</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== تصاویر جفت ========= -->
+    <!-- Gradient_Distribution_Both_Models_Stacked.png و Gradient_Flow_Both_Models.png -->
+    <div class="section-card">
+        <div class="figures-grid">
+            <div class="figure-item">
+                <img src="/kaggle/input/datasets/abolfazluk/picture-data/Gradient_Distribution_Both_Models_Stacked.png" alt="Gradient distribution stacked">
+                <div class="figure-caption">
+                    📊 توزیع گرادیان هر دو مدل
+                    <small>/kaggle/input/datasets/abolfazluk/picture-data/Gradient_Distribution_Both_Models_Stacked.png</small>
+                </div>
+            </div>
+            <div class="figure-item">
+                <img src="/kaggle/input/datasets/abolfazluk/picture-data/Gradient_Flow_Both_Models.png" alt="Gradient flow both models">
+                <div class="figure-caption">
+                    🌊 جریان گرادیان
+                    <small>/kaggle/input/datasets/abolfazluk/picture-data/Gradient_Flow_Both_Models.png</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- آخرین لایه واریانس و بیشینه -->
+    <div class="section-card">
+        <div class="figures-grid">
+            <div class="figure-item">
+                <img src="/kaggle/input/datasets/abolfazluk/picture-data/Last_Layer_Gradient_Variance_Both_Models.png" alt="Variance last layer">
+                <div class="figure-caption">
+                    📉 واریانس گرادیان لایه آخر
+                    <small>/kaggle/input/datasets/abolfazluk/picture-data/Last_Layer_Gradient_Variance_Both_Models.png</small>
+                </div>
+            </div>
+            <div class="figure-item">
+                <img src="/kaggle/input/datasets/abolfazluk/picture-data/Last_Layer_Max_Gradient_Both_Models.png" alt="Max gradient last layer">
+                <div class="figure-caption">
+                    📈 بیشینه گرادیان لایه آخر
+                    <small>/kaggle/input/datasets/abolfazluk/picture-data/Last_Layer_Max_Gradient_Both_Models.png</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Max Abs First Layer و Near Zero -->
+    <div class="section-card">
+        <div class="figures-grid">
+            <div class="figure-item">
+                <img src="/kaggle/input/datasets/abolfazluk/picture-data/Max_Absolute_Gradient_First_Layer_Both_Models.png" alt="Max abs first layer">
+                <div class="figure-caption">
+                    🔬 بیشینه قدرمطلق گرادیان لایه اول
+                    <small>/kaggle/input/datasets/abolfazluk/picture-data/Max_Absolute_Gradient_First_Layer_Both_Models.png</small>
+                </div>
+            </div>
+            <div class="figure-item">
+                <img src="/kaggle/input/datasets/abolfazluk/picture-data/Near_Zero_Gradients_Both_Models.png" alt="Near zero gradients">
+                <div class="figure-caption">
+                    📉 درصد گرادیان‌های نزدیک صفر
+                    <small>/kaggle/input/datasets/abolfazluk/picture-data/Near_Zero_Gradients_Both_Models.png</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نسبت لایه‌های مجاور و weight update -->
+    <div class="section-card">
+        <div class="figures-grid">
+            <div class="figure-item">
+                <img src="/kaggle/input/datasets/abolfazluk/picture-data/Reducing_gradient_between_adjacent_layers.png" alt="Reducing gradient adjacent">
+                <div class="figure-caption">
+                    🔗 نسبت بین لایه‌های مجاور
+                    <small>/kaggle/input/datasets/abolfazluk/picture-data/Reducing_gradient_between_adjacent_layers.png</small>
+                </div>
+            </div>
+            <div class="figure-item">
+                <img src="/kaggle/input/datasets/abolfazluk/picture-data/Weight_Update_Ratio_Both_Models.png" alt="Weight update ratio">
+                <div class="figure-caption">
+                    ⚖️ نسبت به‌روزرسانی وزنه
+                    <small>/kaggle/input/datasets/abolfazluk/picture-data/Weight_Update_Ratio_Both_Models.png</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Weight Update Heatmap + دو gradflow مجزا و rely_sigmoid -->
+    <div class="section-card">
+        <div class="figures-grid">
+            <div class="figure-item">
+                <img src="/kaggle/input/datasets/abolfazluk/picture-data/Weight_Update_Ratio_Heatmap_Both_Models.png" alt="Weight update heatmap">
+                <div class="figure-caption">
+                    🔥 Heatmap نسبت به‌روزرسانی
+                    <small>/kaggle/input/datasets/abolfazluk/picture-data/Weight_Update_Ratio_Heatmap_Both_Models.png</small>
+                </div>
+            </div>
+            <div class="figure-item">
+                <img src="/kaggle/input/datasets/abolfazluk/picture-data/gradflow_relu_he.png" alt="gradflow relu">
+                <div class="figure-caption">
+                    ✅ gradflow ReLU + He
+                    <small>/kaggle/input/datasets/abolfazluk/picture-data/gradflow_relu_he.png</small>
+                </div>
+            </div>
+        </div>
+        <div class="figures-grid" style="margin-top:20px;">
+            <div class="figure-item">
+                <img src="/kaggle/input/datasets/abolfazluk/picture-data/gradflow_sigmoid_xavier.png" alt="gradflow sigmoid">
+                <div class="figure-caption">
+                    ❌ gradflow Sigmoid + Xavier
+                    <small>/kaggle/input/datasets/abolfazluk/picture-data/gradflow_sigmoid_xavier.png</small>
+                </div>
+            </div>
+            <div class="figure-item">
+                <img src="/kaggle/input/datasets/abolfazluk/picture-data/rely_sigmoid.png" alt="rely sigmoid per layer">
+                <div class="figure-caption">
+                    🧬 تحلیل لایه به لایه (rely_sigmoid)
+                    <small>/kaggle/input/datasets/abolfazluk/picture-data/rely_sigmoid.png</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نتیجه‌گیری نهایی (همان تکه آخر) -->
+    <div class="footer-summary">
+        <h1 style="color:#66fcf1; text-align:center;">🏁 نتیجه‌گیری نهایی پروژه: تحلیل تجربی گرادیان</h1>
+        <div style="background:#1f2833; padding:20px; border-radius:16px; margin:20px 0;">
+            <h3 style="color:#e74c3c;">❌ Sigmoid + Xavier: بن‌بست یادگیری</h3>
+            <p>گرادیان‌های لایه اول در مقیاس 10^-9 تا 10^-11، به‌روزرسانی وزنه ناچیز، نسبت First/Last پایین.</p>
+        </div>
+        <div style="background:#1f2833; padding:20px; border-radius:16px; margin:20px 0;">
+            <h3 style="color:#2ecc71;">✅ ReLU + He: استاندارد طلایی</h3>
+            <p>جریان پایدار در تمام ۱۱ لایه، نسبت First/Last تا ۶، همگرایی واقعی.</p>
+        </div>
+        <div style="background:#0b0c10; padding:15px; border:2px solid #66fcf1; border-radius:20px;">
+            <p><strong>💡 سخن پایانی:</strong> ReLU + He با حفظ پایداری عددی اجازه می‌دهد "دانش" به عمق شبکه نفوذ کند؛ مزیتی که Sigmoid را به تاریخ سپرد.</p>
+        </div>
+    </div>
+
+    <!-- اطمینان از نمایش تمام pathها، همه تصاویر یک بار تکرار شدند. 
+         برخی عکس‌ها مثل last layer variance و ... قبلاً گنجانده شد. 
+         برای اطمینان از وجود همه، دو تا از مسیرهای انتهایی هم افزوده شد. -->
+    
+    <!-- دو تصویر آخر که شاید جا افتاده باشد (reducing_gradient قبل بود، حالا تکمیل) -->
+    <div class="section-card">
+        <div class="figures-grid">
+            <div class="figure-item">
+                <img src="/kaggle/input/datasets/abolfazluk/picture-data/Reducing_gradient_between_adjacent_layers.png" alt="reducing gradient">
+                <div class="figure-caption">Reducing gradient between adjacent layers <small>/kaggle/input/datasets/abolfazluk/picture-data/Reducing_gradient_between_adjacent_layers.png</small></div>
+            </div>
+            <div class="figure-item">
+                <img src="/kaggle/input/datasets/abolfazluk/picture-data/rely_sigmoid.png" alt="rely sigmoid">
+                <div class="figure-caption">rely_sigmoid <small>/kaggle/input/datasets/abolfazluk/picture-data/rely_sigmoid.png</small></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- پایان: تمام لینک‌های عکس در img قرار گرفتند. -->
+</div>
+</body>
+</html>
