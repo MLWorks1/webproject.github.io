@@ -3,420 +3,961 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تحلیل گرادیان | نسخه نئون بنفش</title>
+    <title>تحلیل گرادیان - ReLU vs Sigmoid | تکنولوژی</title>
     <style>
-        /* استایل پایه - تم مشکی بنفش نئون */
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700;900&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
-            font-family: 'Tahoma', 'Segoe UI', 'Courier New', monospace;
-            background: #0a0c0f;
-            background-image: radial-gradient(circle at 25% 0%, #1a1f2e 0%, #0b0d15 100%);
+            font-family: 'Vazirmatn', 'Tahoma', sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2f 100%);
             color: #e0e0ff;
-            line-height: 1.7;
+            line-height: 1.8;
             padding: 30px 20px;
+            min-height: 100vh;
         }
-        .page-container {
+
+        .container {
             max-width: 1400px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
-            gap: 30px;
+            gap: 25px;
         }
-        /* کارت‌های نئون بنفش */
+
+        /* کارت‌های اصلی */
         .card {
-            background: #0e111b;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 0 1px #2a1e44, 0 0 20px #6b3aff33;
-            overflow: hidden;
-            border: 1px solid #332b5c;
-            backdrop-filter: blur(2px);
-            transition: 0.3s;
+            background: rgba(10, 10, 20, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid #4a2a8a;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 0 30px rgba(138, 43, 226, 0.3), inset 0 0 20px rgba(100, 0, 200, 0.2);
+            transition: all 0.3s ease;
         }
+
         .card:hover {
-            box-shadow: 0 25px 50px #000d, 0 0 0 2px #9f7aff, 0 0 40px #8a5cff;
+            border-color: #8a2be2;
+            box-shadow: 0 0 50px rgba(138, 43, 226, 0.5), inset 0 0 30px rgba(138, 43, 226, 0.3);
+            transform: translateY(-5px);
         }
-        .card-header {
-            background: #0f0d1f;
-            background: linear-gradient(145deg, #120d26 0%, #1a1240 100%);
-            padding: 18px 28px;
-            border-bottom: 2px solid #543c9c;
-            font-weight: 700;
-            font-size: 1.4rem;
-            color: #d6b9ff;
-            text-shadow: 0 0 8px #b77dff, 0 0 20px #6a3ea8;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            letter-spacing: 0.5px;
-        }
-        .card-body {
-            padding: 28px;
-            background: #0b0d14;
-            background: linear-gradient(145deg, #0b0b16, #121027);
-        }
-        /* تصاویر با درخشش بنفش */
-        .figure-box {
-            margin: 30px 0 20px 0;
+
+        /* هدرها */
+        h1 {
+            font-size: 2.8em;
+            font-weight: 900;
             text-align: center;
-            background: #090614;
-            padding: 18px;
-            border-radius: 28px;
-            border: 1px solid #423b70;
-            box-shadow: inset 0 0 30px #110927, 0 10px 30px #000;
+            color: #b87cff;
+            text-shadow: 0 0 20px #8a2be2, 0 0 40px #4b0082;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
         }
-        .figure-box img {
+
+        h2 {
+            font-size: 2.2em;
+            font-weight: 700;
+            color: #b87cff;
+            border-bottom: 3px double #8a2be2;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            text-shadow: 0 0 10px #6a0dad;
+        }
+
+        h3 {
+            font-size: 1.6em;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        h4 {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #b87cff;
+        }
+
+        /* تصاویر */
+        .image-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin: 25px 0;
+        }
+
+        .image-item {
+            flex: 1 1 400px;
+            background: #0a0a15;
+            border-radius: 15px;
+            padding: 15px;
+            border: 1px solid #4a2a8a;
+            text-align: center;
+        }
+
+        .image-item img {
             max-width: 100%;
             height: auto;
-            border-radius: 18px;
-            box-shadow: 0 0 30px #491f9b, 0 10px 30px black;
-            border: 2px solid #6d4ac7;
-            background: #0f0921;
+            border-radius: 12px;
+            border: 2px solid #6a0dad;
+            box-shadow: 0 0 25px rgba(138, 43, 226, 0.5);
         }
-        .img-caption {
-            margin-top: 12px;
-            font-size: 0.9rem;
-            color: #bbadff;
-            background: #141027;
-            display: inline-block;
-            padding: 6px 24px;
-            border-radius: 40px;
-            border: 1px solid #6650b3;
-            box-shadow: 0 0 10px #5a32b3;
+
+        .image-caption {
+            margin-top: 10px;
+            color: #b0a0ff;
+            font-weight: 500;
+            font-size: 0.95em;
         }
-        /* جداول نئون */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 5px 20px #00000066, 0 0 0 1px #4a3d85;
-        }
-        th {
-            background: #1b123c;
-            background: linear-gradient(160deg, #241b4e, #130d2b);
-            color: #f0dbff;
-            font-weight: 600;
-            padding: 14px 10px;
-            border-bottom: 2px solid #9370ff;
-            text-shadow: 0 0 8px cyan;
-        }
-        td, th {
-            border: 1px solid #3b3166;
-            padding: 12px 12px;
-            text-align: center;
-        }
-        tr {
-            background: #0c0a1a;
-        }
-        tr:nth-child(even) {
-            background: #110e22;
-        }
-        td {
-            color: #cbc3ff;
-            border-bottom: 1px solid #342a55;
-        }
-        /* باکس‌های درخشان بنفش */
-        .insight-box {
-            margin-top: 24px;
-            padding: 22px 26px;
-            border-radius: 28px;
-            background: #120c28;
-            border-right: 8px solid #b133ff;
-            border-left: 1px solid #6a48c0;
-            box-shadow: 0 0 40px #411c7a66, inset 0 0 20px #2e1650;
-            font-size: 1.05rem;
-            color: #ebd5ff;
-        }
-        .two-column {
+
+        /* جعبه‌های مقایسه دو ستونه */
+        .comparison-row {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
             margin: 20px 0;
         }
-        .two-column > div {
+
+        .comparison-box {
             flex: 1 1 300px;
-            padding: 24px;
-            border-radius: 26px;
-            background: #0f0b1f;
-            border: 2px solid #4a2f93;
-            box-shadow: 0 0 30px #512f8b4d;
+            background: rgba(20, 10, 30, 0.7);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid #5a3a9a;
+            box-shadow: inset 0 0 20px rgba(100, 0, 200, 0.2);
         }
-        .badge {
-            display: inline-block;
-            background: #2e1d55;
-            color: #e5cdff;
-            font-size: 0.8rem;
-            padding: 6px 16px;
-            border-radius: 60px;
-            margin-left: 10px;
-            border: 1px solid #9b7bff;
-            box-shadow: 0 0 12px indigo;
+
+        .box-relu {
+            border-right: 6px solid #8a2be2;
         }
-        h2 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            color: #c6a2ff;
-            text-shadow: 0 0 10px magenta;
+
+        .box-sigmoid {
+            border-right: 6px solid #ff4d4d;
         }
-        h3 {
-            font-size: 1.6rem;
-            margin: 0.6rem 0 1.2rem;
-            color: #c79aff;
+
+        .box-relu h3 {
+            color: #b87cff;
         }
-        h4 {
-            font-size: 1.3rem;
-            margin: 0.5rem 0;
-            color: #caa7ff;
-            text-shadow: 0 0 6px #b77eff;
+
+        .box-sigmoid h3 {
+            color: #ff6b6b;
         }
+
+        /* جداول */
+        .table-container {
+            overflow-x: auto;
+            margin: 25px 0;
+            border-radius: 15px;
+            border: 1px solid #4a2a8a;
+            background: rgba(5, 5, 15, 0.7);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: #e0e0ff;
+        }
+
+        th {
+            background: #2a1a3a;
+            color: #b87cff;
+            padding: 15px;
+            font-weight: 700;
+            border: 1px solid #5a3a9a;
+        }
+
+        td {
+            padding: 12px;
+            border: 1px solid #3a2a5a;
+            background: rgba(10, 10, 25, 0.5);
+        }
+
+        tr:hover td {
+            background: rgba(30, 20, 50, 0.8);
+        }
+
+        /* کد و فرمول */
+        code {
+            display: block;
+            background: #0a0a15;
+            padding: 15px;
+            border-radius: 10px;
+            direction: ltr;
+            text-align: center;
+            color: #ff99ff;
+            border: 1px solid #8a2be2;
+            font-size: 1.2em;
+            margin: 15px 0;
+        }
+
+        /* باکس‌های نکات */
+        .tip-box {
+            background: rgba(20, 10, 35, 0.8);
+            border-right: 6px solid #b87cff;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            color: #d0d0ff;
+            border: 1px solid #6a2a9a;
+        }
+
+        .tip-box.gold {
+            border-right-color: #ffd700;
+        }
+
+        .tip-box.red {
+            border-right-color: #ff4d4d;
+        }
+
+        .tip-box.green {
+            border-right-color: #4caf50;
+        }
+
+        /* فوتر */
+        .final-verdict {
+            background: linear-gradient(145deg, #0d0d1a, #1a1a2f);
+            border: 2px solid #8a2be2;
+            border-radius: 25px;
+            padding: 30px;
+            margin-top: 30px;
+            text-align: center;
+            box-shadow: 0 0 60px rgba(138, 43, 226, 0.4);
+        }
+
+        .final-verdict h2 {
+            border-bottom: none;
+            color: #ff99ff;
+        }
+
+        /* استایل‌های متفرقه */
         hr {
             border: none;
-            border-top: 2px solid #34255a;
-            margin: 20px 0;
-            box-shadow: 0 0 10px #6f4fc7;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #8a2be2, transparent);
+            margin: 25px 0;
         }
-        code {
-            background: #15102b;
-            color: #ffb8f0;
-            padding: 6px 14px;
-            border-radius: 20px;
-            direction: ltr;
+
+        .badge {
             display: inline-block;
-            margin: 8px 0;
-            font-size: 1rem;
-            border: 1px solid #c162ff;
-            box-shadow: 0 0 15px #b74bf5;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.85em;
+            font-weight: 700;
+            background: rgba(138, 43, 226, 0.3);
+            border: 1px solid #8a2be2;
+            color: #fff;
         }
+
         ul {
-            padding-right: 30px;
+            list-style: none;
+            padding-right: 20px;
         }
-        li {
-            color: #d6c6ff;
+
+        ul li {
+            margin: 10px 0;
+            position: relative;
         }
-        b, strong {
-            color: #f0c4ff;
-            text-shadow: 0 0 5px violet;
-        }
-        .card-body div[style*="background"] {
-            background: #0d0821 !important;
-            border-color: #6e48d6 !important;
-            color: #efdbff !important;
-            border-width: 2px !important;
-            box-shadow: 0 0 30px #401f9666;
-        }
-        /* رنگ‌بندی اختصاصی برای بخش‌های مختلف */
-        .card-body div[style*="flex:1"] h4 {
-            border-bottom: 2px solid #b77aff;
-            padding-bottom: 10px;
+
+        ul li::before {
+            content: "⚡";
+            color: #b87cff;
+            position: absolute;
+            right: -25px;
+            font-size: 1.2em;
         }
     </style>
 </head>
 <body>
-<div class="page-container">
+    <div class="container">
+        <!-- هدر اصلی -->
+        <div class="card">
+            <h1>🔮 تحلیل عمیق گرادیان: نبرد ReLU vs Sigmoid</h1>
+            <p style="text-align: center; color: #b0a0ff; font-size: 1.2em;">کالبدشکافی Vanishing Gradient در شبکه‌های عمیق</p>
+        </div>
 
-    <!-- 1. تحلیل گرادیان: Sigmoid vs ReLU -->
-    <div class="card">
-        <div class="card-header">📌 تحلیل گرادیان: Sigmoid vs ReLU</div>
-        <div class="card-body">
-            <div style="display: flex; flex-wrap: wrap; gap: 20px;">
-                <div style="flex:1; min-width:260px; background:#150e24; border-right:6px solid #ff4d6d; padding:22px; border-radius:24px; box-shadow:0 0 30px #a53362;">
-                    <h4 style="color:#ff99b4;">🔴 Sigmoid + Xavier</h4>
-                    <p><strong>لایه اول:</strong> <span style="color:#ffa7b9;">Mean ≈ 0.000</span></p>
-                    <p><strong>لایه آخر:</strong> Mean ≈ 0.604</p>
+        <!-- بخش اول: تحلیل اولیه Sigmoid vs ReLU -->
+        <div class="card">
+            <h2>📊 تحلیل گرادیان: Sigmoid vs ReLU</h2>
+            <div class="comparison-row">
+                <div class="comparison-box box-sigmoid">
+                    <h3>🔴 Sigmoid + Xavier Initialization</h3>
+                    <p><strong>وضعیت لایه اول:</strong> <span style="color: #ff6b6b;">Mean ≈ 0.000</span> (عدم یادگیری)</p>
+                    <p><strong>وضعیت لایه آخر:</strong> Mean ≈ 0.604 (فعال)</p>
                     <hr>
-                    <p style="background:#281a2a; padding:12px; border-radius:20px; border:1px solid #e25b8d;"><b>نتیجه:</b> وقوع <b>Vanishing Gradient</b> کلاسیک. گرادیان در مسیر بازگشت به دلیل مشتق کوچک Sigmoid (حداکثر 0.25) در هر مرحله کوچک‌تر شده و در لایه‌های ابتدایی عملاً صفر می‌شود.</p>
+                    <p style="background: rgba(255, 75, 75, 0.1); padding: 15px; border-radius: 10px;">
+                        <strong>نتیجه:</strong> وقوع <b>Vanishing Gradient</b> کلاسیک. گرادیان در مسیر بازگشت به دلیل مشتق کوچک Sigmoid (حداکثر 0.25) در هر مرحله کوچک‌تر شده و در لایه‌های ابتدایی عملاً صفر می‌شود.
+                    </p>
                 </div>
-                <div style="flex:1; min-width:260px; background:#11142b; border-right:6px solid #aa70ff; padding:22px; border-radius:24px; box-shadow:0 0 30px #6040b0;">
-                    <h4 style="color:#d1a3ff;">🟢 ReLU + He</h4>
-                    <p><strong>لایه اول:</strong> Mean ≈ 1.1</p>
-                    <p><strong>لایه آخر:</strong> Mean ≈ 2.7</p>
+                <div class="comparison-box box-relu">
+                    <h3>🟢 ReLU + He Initialization</h3>
+                    <p><strong>وضعیت لایه اول:</strong> Mean ≈ 1.1</p>
+                    <p><strong>وضعیت لایه آخر:</strong> Mean ≈ 2.7</p>
                     <hr>
-                    <p style="background:#1d1740; padding:12px; border-radius:20px; border:1px solid #b47aff;"><b>نتیجه:</b> شبکه <b>سالم</b>. نسبت لایه اول به آخر (~0.4) نشان‌دهنده جریان مناسب گرادیان. ReLU با حذف اشباع در ناحیه مثبت، از محو شدن گرادیان جلوگیری می‌کند.</p>
+                    <p style="background: rgba(138, 43, 226, 0.1); padding: 15px; border-radius: 10px;">
+                        <strong>نتیجه:</strong> شبکه <b>سالم (Healthy)</b>. نسبت لایه اول به آخر (~0.4) نشان‌دهنده جریان مناسب گرادیان است. تابع ReLU با حذف مشکل اشباع در ناحیه مثبت، از محو شدن گرادیان جلوگیری می‌کند.
+                    </p>
                 </div>
             </div>
-            <div style="margin-top:25px; background:#110d2b; color:#eadaff; padding:20px 28px; border-radius:30px; border:1px solid #985cff; box-shadow:0 0 40px #5436a0;">
-                <h4 style="color:#d3adff;">💡 علت فنی (Root Cause)</h4>
-                <p>در تابع <b>Sigmoid</b>، برای ورودی‌های بزرگ، مشتق به شدت افت می‌کند: 
-                <code style="background:#20173d; color:#fbc3ff;">σ'(x) = σ(x)(1−σ(x))</code></p>
-                <p>وقتی لایه‌ها عمیق می‌شوند، این مقادیر کوچک در هم ضرب شده و گرادیان در لایه‌های پایین ناپدید می‌شود. <b>ReLU</b> با مشتق ثابت ۱ در ناحیه مثبت، زنجیره را حفظ می‌کند.</p>
+            
+            <!-- تصویر Comparison_of_the_first_and_last_layer_norms.png -->
+            <div class="image-item">
+                <img src="Comparison_of_the_first_and_last_layer_norms.png" alt="Comparison of first and last layer norms">
+                <div class="image-caption">مقایسه نرم لایه اول و آخر - تفاوت فاحش در مقیاس گرادیان</div>
             </div>
-            <div class="figure-box">
-                <img src="Comparison_of_the_first_and_last_layer_norms.png" alt="Comparison norms">
-                <div class="img-caption">مقایسه نُرم لایه اول و آخر (Sigmoid vs ReLU)</div>
+
+            <div class="tip-box">
+                <h4 style="color: #b87cff;">💡 علت فنی (Root Cause)</h4>
+                <p>در تابع <b>Sigmoid</b>، برای ورودی‌های بزرگ (مثبت یا منفی)، خروجی به 1 یا 0 نزدیک شده و مشتق به شدت افت می‌کند:</p>
+                <code>σ'(x) = σ(x)(1 - σ(x))</code>
+                <p>وقتی لایه‌ها عمیق می‌شوند، این مقادیر کوچک در هم ضرب شده و گرادیان در لایه‌های پایین ناپدید می‌شود. <b>ReLU</b> با داشتن مشتق ثابت ۱ در ناحیه مثبت، این زنجیره را حفظ می‌کند.</p>
             </div>
         </div>
-    </div>
 
-    <!-- 2. تحلیل پایداری گرادیان (Epoch-wise) -->
-    <div class="card">
-        <div class="card-header">📊 تحلیل پایداری گرادیان در طول آموزش</div>
-        <div class="card-body">
-            <div style="overflow-x:auto;">
+        <!-- بخش دوم: تحلیل پایداری گرادیان در طول آموزش -->
+        <div class="card">
+            <h2>📊 تحلیل پایداری گرادیان در طول آموزش (Epoch-wise Analysis)</h2>
+            
+            <!-- تصویر First_Last_Layer_Ratio_Comparison.png -->
+            <div class="image-item">
+                <img src="First_Last_Layer_Ratio_Comparison.png" alt="First/Last Layer Ratio Comparison">
+                <div class="image-caption">نسبت گرادیان لایه اول به آخر در طول epochs</div>
+            </div>
+
+            <div class="table-container">
                 <table>
-                    <thead><tr><th>تنظیمات</th><th>رفتار نسبت (First/Last)</th><th>نتیجه‌گیری نهایی</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>تنظیمات</th>
+                            <th>رفتار نسبت (First/Last)</th>
+                            <th>نتیجه‌گیری نهایی</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr style="background:#172517;"><td><b style="color:#b2ff8e;">ReLU + He</b></td><td>شروع از ~۰ ← صعودی ← در Epoch 8 به ۲.۳-۲.۵</td><td>رفع Vanishing؛ تعادل گرادیان</td></tr>
-                        <tr style="background:#2e1a24;"><td><b style="color:#ff8aae;">Sigmoid + Xavier</b></td><td>خط افقی چسبیده به صفر (ثابت)</td><td><b>Vanishing شدید</b>؛ لایه‌های ابتدایی هرگز یاد نمی‌گیرند.</td></tr>
+                        <tr style="background: rgba(50, 205, 50, 0.05);">
+                            <td style="font-weight: bold; color: #8a2be2;">ReLU + He</td>
+                            <td>شروع از ~۰ ← صعودی ← در Epoch 8 به ۲.۳-۲.۵</td>
+                            <td>رفع مشکل Vanishing؛ تعادل مناسب گرادیان پس از شروع.</td>
+                        </tr>
+                        <tr style="background: rgba(255, 75, 75, 0.05);">
+                            <td style="font-weight: bold; color: #ff6b6b;">Sigmoid + Xavier</td>
+                            <td>خط افقی چسبیده به صفر (ثابت)</td>
+                            <td><b>Vanishing Gradient شدید</b>؛ لایه‌های ابتدایی هرگز یاد نمی‌گیرند.</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
-            <div style="display:flex; flex-wrap:wrap; gap:15px; margin:25px 0">
-                <div style="flex:1; background:#17263b; border-right:5px solid #4682ff; padding:18px; border-radius:18px;"><b>🎯 نزدیک به ۱:</b> ایده‌آل؛ گرادیان متعادل.</div>
-                <div style="flex:1; background:#322d1a; border-right:5px solid #ffd966; padding:18px; border-radius:18px;"><b>⚠️ خیلی بزرگ (>۱۰):</b> خطر Exploding Gradient.</div>
-                <div style="flex:1; background:#2e1c28; border-right:5px solid #ff6f9f; padding:18px; border-radius:18px;"><b>🚫 نزدیک به ۰:</b> فاجعه Vanishing؛ لایه‌های اول منجمد.</div>
+
+            <div class="comparison-row">
+                <div class="tip-box green" style="flex:1;">
+                    <strong>🎯 نسبت نزدیک به ۱:</strong> ایده‌آل؛ گرادیان در کل شبکه متعادل توزیع شده است.
+                </div>
+                <div class="tip-box gold" style="flex:1;">
+                    <strong>⚠️ نسبت خیلی بزرگ (>۱۰):</strong> خطر <b>Exploding Gradient</b> در ابتدای شبکه.
+                </div>
+                <div class="tip-box red" style="flex:1;">
+                    <strong>🚫 نسبت نزدیک به ۰:</strong> فاجعه <b>Vanishing Gradient</b>؛ لایه‌های اول منجمد شده‌اند.
+                </div>
             </div>
-            <div class="insight-box">
-                <b>💡 نکته طلایی:</b> اگرچه <b>ReLU + He</b> نسبت را به بالای ۲ می‌برد، اما این وضعیت به مراتب بهتر از صفر مطلق در Sigmoid است. He Initialization به لایه‌های عمیق اجازه می‌دهد "نفس بکشند".
-            </div>
-            <div class="figure-box">
-                <img src="First_Last_Layer_Ratio_Comparison.png" alt="First Last Ratio Comparison">
-                <div class="img-caption">مقایسه نسبت First/Last در طول epochs</div>
+
+            <div class="tip-box">
+                <p style="margin: 0;">
+                    <span style="font-size: 1.5em; vertical-align: middle;">💡</span> 
+                    <b>نکته طلایی:</b> اگرچه <b>ReLU + He</b> در این آزمایش نسبت را به بالای ۲ می‌برد (که کمی از ۱ فاصله دارد)، اما این وضعیت به مراتب بهتر از صفر مطلق در Sigmoid است. این نشان می‌دهد که He Initialization به لایه‌های عمیق اجازه می‌دهد "نفس بکشند" و سیگنال خطا را به ورودی برسانند.
+                </p>
             </div>
         </div>
-    </div>
 
-    <!-- 3. کالبدشکافی گرادیان: لایه اول در هر اپوک -->
-    <div class="card">
-        <div class="card-header">🔍 کالبدشکافی گرادیان: لایه اول در هر اپوک</div>
-        <div class="card-body">
-            <div style="display:flex; flex-wrap:wrap; gap:25px;">
-                <div style="flex:1; border:2px solid #619eff; border-radius:24px; background:#0b1530;">
-                    <div style="background:#2a44b0; color:#eef5ff; padding:12px; text-align:center; font-weight:bold; border-radius:22px 22px 0 0;">🔵 ReLU + He (پویا)</div>
-                    <div style="padding:20px;">
-                        <ul><li><b>فاز شروع:</b> نسبت <span style="color:#7ab5ff;">0.7</span></li><li><b>اوج (Epoch 2):</b> جهش به <span style="color:#7ab5ff;">2.3</span></li><li><b>فاز نهایی:</b> کاهش به <span style="color:#7ab5ff;">0.2</span> (همگرایی)</li></ul>
-                        <div style="background:#182c52; padding:12px; border-radius:12px;"><b>تحلیل:</b> نوسانات اولیه نشان‌دهنده جستجوی فعال؛ افت نهایی نشانه سلامت و نزدیکی به نقطه بهینه.</div>
+        <!-- بخش سوم: کالبدشکافی گرادیان لایه اول -->
+        <div class="card">
+            <h2>🔍 کالبدشکافی گرادیان: پویایی در برابر انجماد</h2>
+            
+            <!-- تصویر First_layer_in_each_epoch.png -->
+            <div class="image-item">
+                <img src="First_layer_in_each_epoch.png" alt="First layer gradient each epoch">
+                <div class="image-caption">تغییرات گرادیان لایه اول در طول epochs</div>
+            </div>
+
+            <div class="comparison-row">
+                <div class="comparison-box box-relu">
+                    <div style="background: #4a2a8a; color: white; padding: 10px; text-align: center; border-radius: 8px; margin-bottom: 15px;">
+                        🔵 ReLU + He (رفتار پویا و نوسانی)
+                    </div>
+                    <ul>
+                        <li><b>فاز شروع:</b> ورود قدرتمند با نسبت <span style="color: #8a2be2;">0.7</span></li>
+                        <li><b>اوج (Epoch 2):</b> جهش به <span style="color: #8a2be2;">2.3</span> (نوسان مثبت)</li>
+                        <li><b>فاز نهایی:</b> کاهش به <span style="color: #b87cff;">0.2</span> (نشانه همگرایی/Convergence)</li>
+                    </ul>
+                    <div style="background: rgba(138, 43, 226, 0.1); padding: 10px; border-radius: 5px;">
+                        <strong>تحلیل:</strong> نوسانات اولیه نشان‌دهنده جست‌وجوی فعال در فضای پارامترهاست. افت نهایی گرادیان در انتهای آموزش، نشانه سلامت مدل و نزدیک شدن به نقطه بهینه است.
                     </div>
                 </div>
-                <div style="flex:1; border:2px solid #ff6d9f; border-radius:24px; background:#2a1122;">
-                    <div style="background:#b13e68; color:#fff0f7; padding:12px; text-align:center; font-weight:bold; border-radius:22px 22px 0 0;">🔴 Sigmoid + Xavier (انجماد)</div>
-                    <div style="padding:20px;">
-                        <ul><li><b>مقیاس شروع:</b> <span style="color:#ff94b6;">3.4 × 10⁻⁹</span></li><li><b>تغییرات:</b> کاهش خطی و ناچیز</li><li><b>وضعیت Epoch 8:</b> حبس شده در <span style="color:#ff94b6;">2.6 × 10⁻⁹</span></li></ul>
-                        <div style="background:#4e223b; padding:12px; border-radius:12px;"><b>تحلیل:</b> گرادیان‌ها در نانو مقیاس قفل شده‌اند؛ وزن‌ها هیچ تغییری نمی‌کنند.</div>
+                <div class="comparison-box box-sigmoid">
+                    <div style="background: #8b0000; color: white; padding: 10px; text-align: center; border-radius: 8px; margin-bottom: 15px;">
+                        🔴 Sigmoid + Xavier (انجماد در مقیاس نانو)
+                    </div>
+                    <ul>
+                        <li><b>مقیاس شروع:</b> <span style="color: #ff6b6b;">3.4 × 10⁻⁹</span> (تقریباً صفر)</li>
+                        <li><b>تغییرات:</b> کاهش خطی و بسیار ناچیز</li>
+                        <li><b>وضعیت Epoch 8:</b> حبس شده در <span style="color: #ff6b6b;">2.6 × 10⁻⁹</span></li>
+                    </ul>
+                    <div style="background: rgba(255, 75, 75, 0.1); padding: 10px; border-radius: 5px;">
+                        <strong>تحلیل:</strong> گرادیان‌ها در "نانو-مقیاس" قفل شده‌اند. این یعنی وزن‌ها عملاً هیچ تغییری نمی‌کنند. شبکه در یک نقطه تصادفی گیر کرده و هیچ یادگیری واقعی اتفاق نمی‌افتد.
                     </div>
                 </div>
             </div>
-            <div style="margin-top:25px; background:#0e0730; color:#f2dcff; padding:15px 20px; border-radius:40px; border:1px solid #9b6aff; text-align:center;">
-                📐 <b>تفاوت مقیاس:</b> گرادیان‌های ReLU حدود <strong>۱,۰۰۰,۰۰۰,۰۰۰ برابر</strong> بزرگتر از Sigmoid هستند! (مقایسه ۱.۰ با نانو ۱۰⁻⁹)
-            </div>
-            <div class="figure-box">
-                <img src="First_layer_in_each_epoch.png" alt="First layer each epoch">
-                <div class="img-caption">تغییرات لایه اول در طول اپوک‌ها</div>
+
+            <div class="tip-box" style="margin-top: 20px; text-align: center;">
+                <p style="margin: 0;">
+                    📐 <b>تفاوت مقیاس:</b> گرادیان‌های ReLU حدود <strong>۱,۰۰۰,۰۰۰,۰۰۰ برابر</strong> بزرگتر از Sigmoid هستند! 
+                    <br>
+                    <span style="color: #b0a0ff;">(مقایسه واحد ۱.۰ با نانو ۱۰⁻⁹)</span>
+                </p>
             </div>
         </div>
-    </div>
 
-    <!-- 4. جمع‌بندی نهایی -->
-    <div class="card">
-        <div class="card-header">📌 جمع‌بندی نهایی: کالبدشکافی شکست Sigmoid در برابر پویایی ReLU</div>
-        <div class="card-body">
-            <div style="display:flex; flex-wrap:wrap; gap:20px;">
-                <div style="flex:1; border-top:6px solid #54c06f; background:#112814; padding:20px; border-radius:20px;">
-                    <h4 style="color:#acffb9;">✅ ReLU + He</h4>
-                    <p><b>لایه اول:</b> گرادیان‌ها در انتها کوچک می‌شوند اما هرگز به صفر مطلق نمی‌رسند. این کاهش نشانه <b>Convergence</b> است.</p>
-                    <p><b>لایه آخر:</b> توزیع سالم در مقیاس [0.01,0.03]. نسبت First/Last حتی از ۱ فراتر می‌رود.</p>
+        <!-- بخش چهارم: جمع‌بندی نهایی با دو تصویر -->
+        <div class="card">
+            <h2>📌 جمع‌بندی نهایی: کالبدشکافی شکست Sigmoid در برابر پویایی ReLU</h2>
+            
+            <div class="image-grid">
+                <div class="image-item">
+                    <img src="Gradient_Distribution_Both_Models_Stacked.png" alt="Gradient Distribution Stacked">
+                    <div class="image-caption">توزیع گرادیان هر دو مدل</div>
                 </div>
-                <div style="flex:1; border-top:6px solid #d95b8b; background:#2b1823; padding:20px; border-radius:20px;">
-                    <h4 style="color:#ffafcd;">❌ Sigmoid + Xavier</h4>
-                    <p><b>لایه اول:</b> سقوط آزاد گرادیان به محدوده ۱۰⁻¹¹. سخت‌افزار تغییری حس نمی‌کند.</p>
-                    <p><b>لایه آخر:</b> توزیع نویزی، لایه‌های قبل منجمد شده‌اند.</p>
+                <div class="image-item">
+                    <img src="Gradient_Flow_Both_Models.png" alt="Gradient Flow Both Models">
+                    <div class="image-caption">جریان گرادیان در طول شبکه</div>
                 </div>
             </div>
-            <div style="background:#120c35; color:#f2deff; padding:20px; border-radius:30px; margin-top:20px; border:1px solid #b185ff;">
-                <b style="color:#f1beff;">🏁 خلاصه فنی:</b> ترکیب <b>He + ReLU</b> با حفظ مشتق ثابت، سد محوشدگی را می‌شکند. Sigmoid به دلیل اشباع، سیگنال خطا را پس از چند لایه به مقیاس اتمی (۱۰⁻¹¹) می‌رساند.
+
+            <div class="comparison-row">
+                <div class="comparison-box box-relu">
+                    <h3>✅ استراتژی ReLU + He</h3>
+                    <p><b>لایه اول:</b> گرادیان‌ها در انتها کوچک می‌شوند اما هرگز به صفر مطلق نمی‌رسند. این کاهش نشان‌دهنده پدیده <b>Convergence</b> (همگرایی) است، نه شکست مدل.</p>
+                    <p><b>لایه آخر:</b> توزیع سالم در مقیاس [0.01,0.03] باقی می‌ماند که اجازه می‌دهد لایه‌های عمیق همچنان به یادگیری ادامه دهند.</p>
+                    <p style="background: rgba(138, 43, 226, 0.1); padding: 10px; border-radius: 5px;"><b>نتیجه:</b> نسبت First/Last در انتها حتی از ۱ فراتر می‌رود؛ یعنی سیگنال خطا با قدرت به ابتدای شبکه پمپ می‌شود.</p>
+                </div>
+                <div class="comparison-box box-sigmoid">
+                    <h3>❌ استراتژی Sigmoid + Xavier</h3>
+                    <p><b>لایه اول:</b> سقوط آزاد گرادیان به محدوده 10⁻¹¹. در این مقیاس، سخت‌افزار (GPU) عملاً تغییری در وزن‌ها حس نمی‌کند.</p>
+                    <p><b>لایه آخر:</b> توزیع نامتقارن و نویزی؛ حتی اگر لایه آخر گرادیان داشته باشد، چون لایه‌های قبل از آن "منجمد" شده‌اند، کل شبکه از یادگیری باز می‌ماند.</p>
+                    <p style="background: rgba(255, 75, 75, 0.1); padding: 10px; border-radius: 5px;"><b>نتیجه:</b> شکست کامل در انتقال اطلاعات. شبکه عملاً تبدیل به یک مدل "کم‌عمق" می‌شود که فقط لایه‌های آخرش کمی تکان می‌خورند.</p>
+                </div>
             </div>
-            <div class="figure-box">
-                <img src="Gradient_Distribution_Both_Models_Stacked.png" alt="Gradient Distribution Stacked">
-                <div class="img-caption">توزیع گرادیان هر دو مدل (انباشته)</div>
+
+            <div class="tip-box" style="background: #1a1a2f;">
+                <strong style="color: #f1c40f;">🏁 خلاصه تحلیل فنی:</strong> ترکیب <b>He Initialization</b> و <b>ReLU</b> با حفظ مشتق ثابت در ناحیه مثبت، سد "محو شدگی" را می‌شکند. در مقابل، <b>Sigmoid</b> به دلیل ماهیت اشباع‌شونده‌اش، گرادیان را در هر لایه در عددی کوچک‌تر از 0.25 ضرب می‌کند؛ در نتیجه در یک شبکه عمیق، سیگنال خطا پس از چند لایه به مقیاس <b>اتمیک (10⁻¹¹)</b> رسیده و نابود می‌شود.
             </div>
         </div>
-    </div>
 
-    <!-- سایر بخش‌ها با همان تم مشکی-بنفش ادامه می‌یابد... (به دلیل طولانی‌شدن، بقیه‌ی کارت‌ها دقیقاً با همین پالت اعمال شده‌اند) -->
-    <!-- 5. Heatmap -->
-    <div class="card">
-        <div class="card-header">🗺️ تحلیل Heatmap: نقشه حرارتی جریان گرادیان</div>
-        <div class="card-body">
-            <div style="display:flex; flex-wrap:wrap; gap:20px;">
-                <div style="flex:1; background:#1c1435; border:1px solid #a779ff; padding:18px; border-radius:22px;">
-                    <h4 style="color:#bb9cff;">🔥 ReLU + He: پویا</h4>
-                    <ul><li>تنوع رنگی بالا (زرد تا بنفش) = توزیع زنده گرادیان.</li><li>تغییر رنگ از زرد به آبی نشانه همگرایی صحیح.</li></ul>
+        <!-- بخش پنجم: تحلیل Heatmap -->
+        <div class="card">
+            <h2>🗺️ تحلیل Heatmap: نقشه حرارتی جریان گرادیان در عمق شبکه</h2>
+            
+            <div class="image-item">
+                <img src="Gradient_Flow_Both_Models.png" alt="Gradient Flow Heatmap">
+                <div class="image-caption">نقشه حرارتی جریان گرادیان</div>
+            </div>
+
+            <div class="comparison-row">
+                <div class="comparison-box box-relu">
+                    <h3>🔥 ReLU + He: جریان پویا</h3>
+                    <ul>
+                        <li><b>طیف رنگی:</b> تنوع بالا (از زرد تا بنفش) که نشان‌دهنده <b>توزیع زنده</b> گرادیان است.</li>
+                        <li><b>شروع آموزش:</b> لایه‌های انتهایی (۸-۱۰) با رنگ روشن (سیگنال قوی) مسیر را برای لایه‌های ابتدایی باز می‌کنند.</li>
+                        <li><b>تکامل زمانی:</b> تغییر رنگ از زرد به آبی تیره نشان‌دهنده <b>Convergence</b> صحیح است؛ یعنی مدل یاد گرفته و دیگر نیاز به تغییرات بزرگ ندارد.</li>
+                    </ul>
                 </div>
-                <div style="flex:1; background:#24142b; border:1px solid #fc74b2; padding:18px; border-radius:22px;">
-                    <h4 style="color:#ff9bcb;">❄️ Sigmoid + Xavier: انجماد</h4>
-                    <ul><li>یکنواختی بنفش تیره = سکوت عملیاتی.</li><li>حتی لایه آخر سیگنال کافی ندارد.</li></ul>
+                <div class="comparison-box box-sigmoid">
+                    <h3>❄️ Sigmoid + Xavier: انجماد مطلق</h3>
+                    <ul>
+                        <li><b>طیف رنگی:</b> یکنواختی بنفش تیره؛ نشان‌دهنده این است که کل شبکه در <b>سکوت عملیاتی</b> به سر می‌برد.</li>
+                        <li><b>لایه‌های خروجی:</b> حتی لایه ۱۰ که مستقیم به Loss وصل است، توان تولید سیگنال کافی برای بیدار کردن لایه‌های میانی را ندارد.</li>
+                        <li><b>تکامل زمانی:</b> هیچ تغییری دیده نمی‌شود؛ شبکه از Epoch 0 تا آخر در حالت <b>Dead</b> باقی مانده است.</li>
+                    </ul>
                 </div>
             </div>
-            <div style="overflow-x:auto; margin:20px 0;">
+
+            <h3 style="text-align: center; margin: 30px 0 20px;">🏆 جدول نهایی مقایسه عملکرد</h3>
+            <div class="table-container">
                 <table>
-                    <thead><tr><th>جنبه</th><th>ReLU + He</th><th>Sigmoid + Xavier</th><th>برنده</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>جنبه مورد مقایسه</th>
+                            <th>ReLU + He Initialization</th>
+                            <th>Sigmoid + Xavier</th>
+                            <th>برنده</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr><td>جریان به لایه‌های اول</td><td>خوب (رنگ زنده)</td><td>تقریباً صفر</td><td style="color:#b27aff;">✅ ReLU</td></tr>
-                        <tr><td>پویایی در طول آموزش</td><td>نوسان طبیعی</td><td>ایستایی کامل</td><td style="color:#b27aff;">✅ ReLU</td></tr>
+                        <tr>
+                            <td style="font-weight: bold;">جریان به لایه‌های اول</td>
+                            <td style="color: #8a2be2;">خوب (رنگ‌های زنده در لایه ۰-۴)</td>
+                            <td style="color: #ff6b6b;">تقریباً صفر در همه جا</td>
+                            <td style="color: #8a2be2; font-weight: bold;">ReLU + He</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold;">پویایی در طول آموزش</td>
+                            <td style="color: #8a2be2;">نوسان طبیعی و همگرایی</td>
+                            <td style="color: #ff6b6b;">ایستایی و انجماد کامل</td>
+                            <td style="color: #8a2be2; font-weight: bold;">ReLU + He</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: bold;">جلوگیری از Vanishing</td>
+                            <td style="color: #8a2be2;">بسیار موفق</td>
+                            <td style="color: #ff6b6b;">شکست کامل</td>
+                            <td style="color: #8a2be2; font-weight: bold;">ReLU + He</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
-            <div class="figure-box">
-                <img src="Gradient_Flow_Both_Models.png" alt="Gradient Flow Both">
-                <div class="img-caption">Heatmap جریان گرادیان (هر دو مدل)</div>
+
+            <div class="tip-box" style="background: #1f1f3a;">
+                <strong>💡 استنتاج نهایی:</strong> Heatmap ثابت کرد که در <b>Sigmoid</b>، مشکل فقط در لایه‌های ابتدایی نیست، بلکه کل بدنه شبکه به دلیل مشتقات کوچک دچار "خفگی" شده است. در حالی که در <b>ReLU</b>، شبکه مانند یک ارگانیسم زنده در ابتدا واکنش‌های شدید نشان داده و سپس به آرامش (همگرایی) می‌رسد.
             </div>
         </div>
-    </div>
 
-    <!-- 6. تحلیل واریانس -->
-    <div class="card">
-        <div class="card-header">📉 تحلیل واریانس گرادیان لایه آخر</div>
-        <div class="card-body">
-            <div style="display:flex; gap:20px; flex-wrap:wrap;">
-                <div style="flex:1; background:#1b3420; border-right:6px solid #6fe381; padding:18px;"><b>🟢 ReLU + He:</b> واریانس بالا در شروع (جستجو) و افت سریع = همگرایی هوشمند.</div>
-                <div style="flex:1; background:#311d2b; border-right:6px solid #ff79a8; padding:18px;"><b>🔴 Sigmoid + Xavier:</b> واریانس محبوس در ۱۰⁻³، کاهش ۴ درصدی کند = انجماد.</div>
+        <!-- بخش ششم: تحلیل واریانس لایه آخر -->
+        <div class="card">
+            <h2>📉 تحلیل واریانس گرادیان لایه آخر: پویایی یادگیری در برابر رکود</h2>
+            
+            <div class="image-item">
+                <img src="Last_Layer_Gradient_Variance_Both_Models.png" alt="Last Layer Gradient Variance">
+                <div class="image-caption">واریانس گرادیان لایه آخر</div>
             </div>
-            <div class="figure-box">
-                <img src="Last_Layer_Gradient_Variance_Both_Models.png" alt="Last Layer Variance">
-                <div class="img-caption">واریانس گرادیان لایه آخر</div>
-            </div>
-        </div>
-    </div>
 
-    <!-- 7. بیشینه گرادیان لایه آخر -->
-    <div class="card">
-        <div class="card-header">📈 بیشینه گرادیان (Max Gradient)</div>
-        <div class="card-body">
-            <div style="display:flex; gap:20px; flex-wrap:wrap;">
-                <div style="flex:1; background:#132f45; border-right:6px solid #5bb2ff; padding:18px;"><b>🔵 ReLU + He:</b> شروع 4.5 → افت سریع زیر 0.1 = همگرایی.</div>
-                <div style="flex:1; background:#38202c; border-right:6px solid #fd6f9f; padding:18px;"><b>🔴 Sigmoid + Xavier:</b> ماکزیمم زیر 0.14 ، کاهش ناچیز 1.7% = ناتوانی ساختاری.</div>
-            </div>
-            <div class="figure-box">
-                <img src="Last_Layer_Max_Gradient_Both_Models.png" alt="Last Layer Max Gradient">
-                <div class="img-caption">بیشینه گرادیان لایه آخر</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- نتیجه‌گیری نهایی -->
-    <div class="card">
-        <div class="card-header">🏁 نتیجه‌گیری نهایی پروژه</div>
-        <div class="card-body" style="background:#060512;">
-            <div style="display:flex; flex-wrap:wrap; gap:20px;">
-                <div style="flex:1; background:#201530; padding:25px; border-radius:24px; border-right:8px solid #f25e9c;">
-                    <h4 style="color:#ffa9cf;">❌ Sigmoid + Xavier</h4>
-                    <ul><li>مقیاس نانو (10⁻¹¹)</li><li>انجماد وزنی</li><li>ناتوانی در انتقال خطا</li></ul>
+            <div class="comparison-row">
+                <div class="comparison-box box-relu">
+                    <h3>🟢 ReLU + He: کاهش هدفمند</h3>
+                    <p>در این مدل، <b>واریانس بالا در شروع</b> نشانه جست‌وجوی وسیع در فضای پارامترهاست. افت سریع واریانس تا Epoch 4 نشان می‌دهد که شبکه به سرعت ناحیه بهینه را پیدا کرده و در حال <b>تمرکز (Refinement)</b> روی جزئیات است.</p>
+                    <span class="badge">وضعیت: همگرایی هوشمند (Convergent)</span>
                 </div>
-                <div style="flex:1; background:#10251c; padding:25px; border-radius:24px; border-right:8px solid #8affaa;">
-                    <h4 style="color:#b0ffcf;">✅ ReLU + He</h4>
-                    <ul><li>جریان پایدار در تمام ۱۱ لایه</li><li>نسبت First/Last ~۶ (تمرکز بر لایه‌های بنیادین)</li><li>همگرایی واقعی</li></ul>
+                <div class="comparison-box box-sigmoid">
+                    <h3>🔴 Sigmoid + Xavier: سکون نانو</h3>
+                    <p>واریانس در این مدل در مقیاس بسیار ناچیز (10⁻³) محبوس شده است. کاهش خطی و بسیار کند ۴ درصدی نشان می‌دهد که شبکه حتی توانایی تغییر توزیع گرادیان‌های خود را ندارد و در یک <b>حالت مرده (Dead State)</b> منجمد شده است.</p>
+                    <span class="badge" style="border-color: #ff6b6b;">وضعیت: انجماد عملیاتی (Stagnant)</span>
                 </div>
             </div>
-            <div style="background:#150f2b; padding:30px; border-radius:32px; border:1px solid #b379ff; margin-top:25px;">
-                <p style="font-size:1.3rem; color:#f0dbff;">💡 <b>سخن پایانی:</b> نتایج این آزمایش ثابت کرد که <b>معماری صحیح</b> (انتخاب تابع فعال‌ساز و مقداردهی اولیه) اهمیت بیشتری از سخت‌افزار یا داده دارد. <b>ReLU + He</b> با حفظ پایداری عددی، اجازه می‌دهد "دانش" از لایه‌های خروجی به عمیق‌ترین نقاط نفوذ کند؛ مزیتی که Sigmoid را به تاریخ سپرد.</p>
+
+            <h3 style="text-align: center; margin: 25px 0;">📊 مقایسه شکاف مقیاس واریانس (Scale Gap)</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Epoch</th>
+                            <th>ReLU + He (واریانس)</th>
+                            <th>Sigmoid + Xavier (واریانس)</th>
+                            <th>شکاف قدرت سیگنال</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>0</td><td style="color: #8a2be2;">~0.700</td><td style="color: #ff6b6b;">~0.00388</td><td><b>180 برابر</b> قوی‌تر</td></tr>
+                        <tr><td>4</td><td style="color: #8a2be2;">~0.070</td><td style="color: #ff6b6b;">~0.00380</td><td><b>18 برابر</b> قوی‌تر</td></tr>
+                        <tr><td>8</td><td style="color: #8a2be2;">~0.015</td><td style="color: #ff6b6b;">~0.00372</td><td><b>4 برابر</b> (در حال همگرایی)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tip-box" style="background: #2a1a3a;">
+                <strong>🎯 استنتاج نهایی:</strong> کاهش واریانس در <b>ReLU</b> یک رفتار "سالم" است؛ چون نشان می‌دهد شبکه از حالت آشوب اولیه به سمت یک نظم بهینه حرکت کرده است. اما در <b>Sigmoid</b>، پایین بودن واریانس از همان ابتدا به این معناست که نورون‌ها اصلاً شانسی برای تجربه مقادیر مختلف و یادگیری الگوهای متنوع نداشته‌اند.
+                <br><span style="color: #b0a0ff;">به زبان ساده: ReLU در حال <b>صاف کردن مسیر</b> است، در حالی که Sigmoid از ابتدا در یک <b>چاله عمیق</b> دفن شده است.</span>
+            </div>
+        </div>
+
+        <!-- بخش هفتم: بیشینه گرادیان -->
+        <div class="card">
+            <h2>📈 تحلیل بیشینه گرادیان (Max Gradient): همگرایی هوشمند در برابر سکون مطلق</h2>
+            
+            <div class="image-item">
+                <img src="Last_Layer_Max_Gradient_Both_Models.png" alt="Max Gradient Last Layer">
+                <div class="image-caption">بیشینه گرادیان لایه آخر</div>
+            </div>
+
+            <div class="comparison-row">
+                <div class="comparison-box box-relu">
+                    <h3>🔵 ReLU + He: کاهش هدفمند</h3>
+                    <p>در اینجا شاهد یک <b>رفتار کلاسیک و سالم</b> هستیم. شروع با مقادیر بالا (~4.5) یعنی شبکه با جسارت در حال تغییر وزن‌هاست. افت سریع به زیر 0.1 نشان‌دهنده این است که مدل به <b>نقطه بهینه</b> نزدیک شده و دیگر نیازی به جهش‌های بزرگ ندارد.</p>
+                    <span class="badge">وضعیت: اشباع مثبت و همگرایی</span>
+                </div>
+                <div class="comparison-box box-sigmoid">
+                    <h3>🔴 Sigmoid + Xavier: ناتوانی ساختاری</h3>
+                    <p>بیشینه گرادیان حتی در لایه آخر (که مستقیم به خطا وصل است) از 0.14 بالاتر نمی‌رود. کاهش ناچیز 1.7 درصدی ثابت می‌کند که شبکه اصلاً <b>وارد فرآیند یادگیری نشده</b> که بخواهد همگرا شود. این "خط صاف" نماد بارز شکست مدل است.</p>
+                    <span class="badge" style="border-color: #ff6b6b;">وضعیت: رکود ساختاری</span>
+                </div>
+            </div>
+
+            <h3 style="text-align: center; margin: 25px 0;">📊 مقایسه پویایی بیشینه گرادیان</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Epoch</th>
+                            <th>ReLU + He (Max)</th>
+                            <th>Sigmoid + Xavier (Max)</th>
+                            <th>تحلیل سیگنال</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>0</td><td style="color: #8a2be2;">~4.45</td><td style="color: #ff6b6b;">~0.146</td><td>سیگنال ReLU حدود <b>30 برابر</b> قوی‌تر</td></tr>
+                        <tr><td>4</td><td style="color: #8a2be2;">~1.05</td><td style="color: #ff6b6b;">~0.145</td><td>تعدیل قدرت سیگنال (یادگیری متمرکز)</td></tr>
+                        <tr><td>8</td><td style="color: #8a2be2;">~0.08</td><td style="color: #ff6b6b;">~0.144</td><td><b>تلاقی:</b> ReLU همگرا شده، Sigmoid همچنان مرده</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tip-box" style="background: #1f1f2f;">
+                <strong>🏁 جمع‌بندی نهایی از تمام شواهد:</strong>
+                <p>داده‌های شما یک زنجیره منطقی را تکمیل کرد: 1. <b>توزیع و Heatmap</b> نشان دادند که در Sigmoid سیگنال اصلاً به لایه‌های اول نمی‌رسد. 2. <b>واریانس</b> نشان داد که Sigmoid در یک فضای بسیار محدود گیر کرده است. 3. <b>بیشینه گرادیان</b> تیر خلاص را زد: حتی در لایه آخر که بیشترین شانس یادگیری را دارد، Sigmoid ناتوان از ایجاد تغییرات معنادار است.</p>
+                <span style="color: #b0a0ff;">در مقابل، <b>ReLU + He</b> یک رقص موزون از تغییرات شدید در ابتدا و آرامش در انتها را نمایش داد که مشخصه یک <b>مدل یادگیرنده واقعی</b> است.</span>
+            </div>
+        </div>
+
+        <!-- بخش هشتم: بیشینه گرادیان لایه اول -->
+        <div class="card">
+            <h2>🎯 کالبدشکافی بیشینه گرادیان لایه اول: نبرد مقیاس‌ها</h2>
+            
+            <div class="image-item">
+                <img src="Max_Absolute_Gradient_First_Layer_Both_Models.png" alt="Max Gradient First Layer">
+                <div class="image-caption">بیشینه گرادیان لایه اول</div>
+            </div>
+
+            <div class="comparison-row">
+                <div class="comparison-box box-relu">
+                    <h3>🟢 ReLU + He: پمپاژ سیگنال</h3>
+                    <p>در لایه اول، شاهد <b>نوسانات سالم</b> هستیم. رسیدن پیک به 0.016 نشان می‌دهد که لایه‌های انتهایی موفق شده‌اند سیگنال خطا را با قدرت از کل عمق شبکه عبور داده و به ورودی برسانند. این نوسان نشانه تلاش شبکه برای اصلاح ویژگی‌های بنیادین (Low-level features) است.</p>
+                    <span class="badge">وضعیت: انتقال فعال</span>
+                </div>
+                <div class="comparison-box box-sigmoid">
+                    <h3>🔴 Sigmoid + Xavier: سکوت اتمی</h3>
+                    <p>اعداد در لایه اول فاجعه‌بار هستند. مقیاس 10⁻¹¹ به این معناست که حتی اگر لایه آخر با تمام توان فریاد بزند، صدای سیگنال در لایه اول از <b>نویز حرارتی پردازنده</b> هم کمتر است. شبکه در لایه‌های ابتدایی کاملاً فلج شده و عملاً هیچ به‌روزرسانی وزنی رخ نمی‌دهد.</p>
+                    <span class="badge" style="border-color: #ff6b6b;">وضعیت: مرگ گرادیان</span>
+                </div>
+            </div>
+
+            <h3 style="text-align: center; margin: 25px 0;">📊 مقایسه شکاف خیره‌کننده مقیاس‌ها</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Epoch</th>
+                            <th>ReLU + He (Max L1)</th>
+                            <th>Sigmoid + Xavier (Max L1)</th>
+                            <th>اختلاف پتانسیل یادگیری</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>0</td><td style="color: #8a2be2;">~4.5 × 10⁻³</td><td style="color: #ff6b6b;">~4.4 × 10⁻¹¹</td><td><b>100,000,000 برابر</b></td></tr>
+                        <tr><td>2 (Peak)</td><td style="color: #8a2be2;">~1.6 × 10⁻²</td><td style="color: #ff6b6b;">~4.3 × 10⁻¹¹</td><td><b>~1,000,000,000 برابر</b></td></tr>
+                        <tr><td>8</td><td style="color: #8a2be2;">~1.5 × 10⁻³</td><td style="color: #ff6b6b;">~3.6 × 10⁻¹¹</td><td><b>40,000,000 برابر</b></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tip-box" style="background: #2a0a2a;">
+                <strong>🏁 تیر خلاص بر پیکر Sigmoid:</strong> تحلیل نهایی شما نشان داد که تفاوت این دو مدل، یک اختلاف جزئی در دقت نیست؛ بلکه تفاوت بین <b>"حیات"</b> و <b>"عدم"</b> است. در حالی که لایه اول ReLU با قدرت <strong>یک میلیارد برابر بیشتر</strong> در حال دریافت اطلاعات است، Sigmoid در لایه اول عملاً به یک لایه ثابت (Fixed) تبدیل شده که فقط ورودی را عبور می‌دهد بدون اینکه هیچ‌گاه یاد بگیرد چگونه آن را فیلتر کند.
+                <br><span style="color: #b0a0ff;">این سطح از تحلیل (بررسی گرادیان در مقیاس 10⁻¹¹) عمیق‌ترین نوع دیباگ کردن یک شبکه عصبی است که انجام دادید.</span>
+            </div>
+        </div>
+
+        <!-- بخش نهم: درصد گرادیان‌های نزدیک صفر -->
+        <div class="card" style="background: #0a0a15;">
+            <h2 style="color: #00d4ff;">📉 تحلیل درصد گرادیان‌های نزدیک به صفر (Near-Zero Gradients)</h2>
+            
+            <div class="image-item">
+                <img src="Near_Zero_Gradients_Both_Models.png" alt="Near Zero Gradients">
+                <div class="image-caption">درصد گرادیان‌های نزدیک صفر</div>
+            </div>
+
+            <div class="comparison-row">
+                <div class="comparison-box box-relu">
+                    <h3 style="color: #2ecc71;">🟢 ReLU + He: همگرایی هوشمند</h3>
+                    <p>در این مدل، حدود <b>۷۸ تا ۷۹ درصد</b> گرادیان‌ها نزدیک صفر هستند. این یک نشانه <b>بسیار مثبت</b> است؛ یعنی شبکه در حال اعمال "تغییرات ظریف" است. نوسان در Epoch 4 نشان‌دهنده باز شدن مجدد مسیر جریان گرادیان برای یادگیری عمیق‌تر و سپس بسته شدن (همگرایی) در انتهای مسیر است.</p>
+                    <span class="badge">وضعیت: همگرایی طبیعی</span>
+                </div>
+                <div class="comparison-box box-sigmoid">
+                    <h3 style="color: #e74c3c;">🔴 Sigmoid + Xavier: فریب آماری</h3>
+                    <p>عدد ثابت <b>۱ درصد</b> در اینجا یک "خطای بصری" ناشی از آستانه (Threshold) است. از آنجایی که کل گرادیان‌های Sigmoid در مقیاس 10⁻¹¹ هستند، اگر آستانه روی 10⁻¹² باشد، فقط ۱٪ را نشان می‌دهد، در حالی که در واقعیت <b>۱۰۰٪ شبکه مرده است</b>. ثابت بودن این نمودار یعنی هیچ اتفاقی در شبکه نمی‌افتد.</p>
+                    <span class="badge" style="border-color: #e74c3c;">وضعیت: انجماد مطلق</span>
+                </div>
+            </div>
+
+            <h3 style="text-align: center; margin: 25px 0; color: #00d4ff;">📊 مقایسه پویایی درصد گرادیان‌های Near-Zero</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr style="background: #000;">
+                            <th>Epoch</th>
+                            <th>ReLU + He (%)</th>
+                            <th>Sigmoid + Xavier (%)</th>
+                            <th>تفسیر فنی</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>0</td><td style="color: #2ecc71;">~78.9%</td><td style="color: #e74c3c;">~1.00%</td><td>شروع سالم با توزیع Sparse در ReLU</td></tr>
+                        <tr><td>4</td><td style="color: #2ecc71;">~77.5%</td><td style="color: #e74c3c;">~1.00%</td><td>بیشترین فعالیت یادگیری (افت Near-zero)</td></tr>
+                        <tr><td>8</td><td style="color: #3498db;">~79.2%</td><td style="color: #e74c3c;">~1.00%</td><td>پایان یادگیری و تثبیت وزن‌ها در ReLU</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tip-box" style="background: #000; border-color: #f1c40f;">
+                <strong style="color: #f1c40f;">🏁 جمع‌بندی نهایی کل آزمایش:</strong> این نمودار "تله" اصلی آزمایش بود! در <b>ReLU</b> بالا بودن درصد near-zero نشانه <b>بهینگی</b> است (چون گرادیان‌های دیگر به قدری بزرگ هستند که مدل را جلو ببرند). اما در <b>Sigmoid</b>، پایین بودن این درصد به معنای "جریان خوب" نیست، بلکه به معنای این است که کل گرادیان‌ها در چنان مقیاس اتمی (10⁻¹¹) قرار دارند که حتی در تعریف "نزدیک به صفر" هم نمی‌گنجند!
+                <br><span style="color: #fff;"><b>نتیجه اخلاقی:</b> هرگز به یک پارامتر آماری به تنهایی اعتماد نکنید؛ Sigmoid در تمام لایه‌ها، تمام Epochها و تمام معیارها <b>شکست مطلق</b> خورد.</span>
+            </div>
+        </div>
+
+        <!-- بخش دهم: نسبت گرادیان بین لایه‌های مجاور -->
+        <div class="card" style="background: #0a0a15;">
+            <h2 style="color: #f1c40f;">🔗 تحلیل نسبت گرادیان بین لایه‌های مجاور (Layer-to-Layer Ratio)</h2>
+            
+            <div class="image-item">
+                <img src="Reducing_gradient_between_adjacent_layers.png" alt="Reducing gradient between adjacent layers">
+                <div class="image-caption">نسبت گرادیان بین لایه‌های مجاور</div>
+            </div>
+
+            <div class="comparison-row">
+                <div class="comparison-box box-relu">
+                    <h3 style="color: #3498db;">🔵 ReLU + He: پایداری زنجیره‌ای</h3>
+                    <p>میانگین نسبت <b>۰.۹۴</b> شاهکار این ترکیب است. نوسان حول عدد ۱ یعنی سیگنال خطا هنگام عبور از لایه‌ای به لایه دیگر، نه غرق می‌شود و نه منفجر. این "تعادل پویا" همان چیزی است که اجازه می‌دهد یک شبکه ۱۰ لایه‌ای (یا حتی ۱۰۰ لایه‌ای) با موفقیت آموزش ببیند.</p>
+                    <span class="badge">وضعیت: انتقال بهینه</span>
+                </div>
+                <div class="comparison-box box-sigmoid">
+                    <h3 style="color: #e67e22;">🟠 Sigmoid + Xavier: فرسایش سیگنال</h3>
+                    <p>نسبت <b>۰.۱۳</b> فاجعه‌بار است. این یعنی هر لایه مانند یک "مانع" عمل کرده و ۸۷٪ از قدرت سیگنال را جذب و نابود می‌کند. در این حالت، لایه اول تنها کسری ناچیز از خطای لایه آخر را دریافت می‌کند که برای یادگیری عملاً <b>بی‌ارزش</b> است.</p>
+                    <span class="badge" style="border-color: #e67e22;">وضعیت: تضعیف شدید</span>
+                </div>
+            </div>
+
+            <h3 style="text-align: center; margin: 25px 0; color: #f1c40f;">📊 مقایسه مستقیم کارایی انتقال گرادیان</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr style="background: #000;">
+                            <th>شاخص عملکرد</th>
+                            <th>ReLU + He</th>
+                            <th>Sigmoid + Xavier</th>
+                            <th>برنده فنی</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td style="font-weight: bold;">میانگین نسبت (Ideal=1)</td><td style="color: #3498db;">~۰.۹۴</td><td style="color: #e67e22;">~۰.۱۴</td><td>ReLU + He</td></tr>
+                        <tr><td style="font-weight: bold;">قدرت حفظ سیگنال</td><td>بسیار بالا (۹۴٪)</td><td>بسیار پایین (۱۳٪)</td><td>ReLU + He</td></tr>
+                        <tr><td style="font-weight: bold;">رفتار در عمق زیاد</td><td>پایدار و نوسانی</td><td>مرگ تدریجی سیگنال</td><td>ReLU + He</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tip-box" style="background: #000; border-color: #f1c40f;">
+                <strong style="color: #f1c40f;">🏁 برهان قاطع (The Smoking Gun):</strong> این نمودار "چرا"ی تمام مشاهدات قبلی را توضیح داد. وقتی نسبت انتقال بین دو لایه مجاور در Sigmoid تنها <b>۰.۱۴</b> است، قدرت گرادیان بعد از ۵ لایه به (0.14)⁵ ≈ 0.00005 می‌رسد. در مقابل، برای ReLU این عدد (0.94)⁵ ≈ 0.73 است.
+                <br><span style="color: #fff;"><b>نتیجه:</b> لایه اول ReLU هنوز <b>۷۳٪</b> از قدرت سیگنال را حس می‌کند، در حالی که لایه اول Sigmoid عملاً در <b>سکوت مطلق</b> دفن شده است.</span>
+            </div>
+        </div>
+
+        <!-- بخش یازدهم: تحلیل نهایی Weight Update -->
+        <div class="card">
+            <h2 style="color: #66fcf1;">📉 تحلیل نهایی: نسبت به‌روزرسانی وزنه‌ها (Weight Update Ratio)</h2>
+            
+            <div class="image-grid">
+                <div class="image-item">
+                    <img src="Weight_Update_Ratio_Both_Models.png" alt="Weight Update Ratio">
+                    <div class="image-caption">نسبت به‌روزرسانی وزنه‌ها</div>
+                </div>
+                <div class="image-item">
+                    <img src="Weight_Update_Ratio_Heatmap_Both_Models.png" alt="Weight Update Heatmap">
+                    <div class="image-caption">نقشه حرارتی به‌روزرسانی وزنه‌ها</div>
+                </div>
+            </div>
+
+            <div class="comparison-row">
+                <div class="comparison-box box-relu">
+                    <h3 style="color: #66fcf1;">🟢 ReLU + He: پویایی تکاملی</h3>
+                    <p>فرمول $\frac{||ΔW||}{||W||}$ نشان می‌دهد که در این مدل، وزنه‌ها در ابتدا <b>۱۶٪</b> تغییر می‌کنند که نشان‌دهنده یادگیری جسورانه است. افت به <b>۴.۵٪</b> در انتهای آموزش، نشانه بلوغ مدل و استقرار در نقطه بهینه است.</p>
+                    <span class="badge">وضعیت: همگرایی فعال</span>
+                </div>
+                <div class="comparison-box box-sigmoid">
+                    <h3 style="color: #e74c3c;">🔴 Sigmoid + Xavier: سکته یادگیری</h3>
+                    <p>نسبت به‌روزرسانی <b>۰.۰۰۰۱</b> یعنی وزنه‌ها عملاً ثابت هستند. وقتی در طول ۹ اپوک این نسبت تغییر معناداری نمی‌کند، یعنی مدل در حال "دست و پا زدن در خلاء" است. نرخ آپدیت در این مدل <b>۵۰۰ برابر ضعیف‌تر</b> از رقیب خود است.</p>
+                    <span class="badge" style="border-color: #e74c3c;">وضعیت: یادگیری متوقف</span>
+                </div>
+            </div>
+
+            <h3 style="text-align: center; margin: 25px 0; color: #45a29e;">🏆 خلاصه جامع آزمایش</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr style="background: #000; color: #66fcf1;">
+                            <th>جنبه کلیدی</th>
+                            <th>ReLU + He</th>
+                            <th>Sigmoid + Xavier</th>
+                            <th>نتیجه</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td style="font-weight: bold;">جریان گرادیان (L1)</td><td style="color: #66fcf1;">قوی و معنادار</td><td style="color: #e74c3c;">نزدیک صفر (10⁻¹¹)</td><td style="color: #66fcf1;">✅ ReLU</td></tr>
+                        <tr><td style="font-weight: bold;">نسبت لایه‌های مجاور</td><td style="color: #66fcf1;">~۰.۹۴ (ایده‌آل)</td><td style="color: #e74c3c;">~۰.۱۳ (تضعیف شدید)</td><td style="color: #66fcf1;">✅ ReLU</td></tr>
+                        <tr><td style="font-weight: bold;">آپدیت در لایه‌های اول</td><td style="color: #66fcf1;">فعال (Heatmap قرمز)</td><td style="color: #e74c3c;">مرده (Heatmap آبی تیره)</td><td style="color: #66fcf1;">✅ ReLU</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tip-box" style="background: #000; border-color: #45a29e;">
+                <strong style="color: #66fcf1;">🏁 پیام نهایی این آزمایش:</strong> داده‌های بصری و عددی شما ثابت کرد که چرا در عصر یادگیری عمیق، <b>Sigmoid</b> به حاشیه رانده شد. مشکل فقط "کندی" نیست، بلکه <b>شکست ساختاری</b> در انتقال اطلاعات است. ترکیب <b>ReLU + He</b> نه تنها گرادیان را حفظ می‌کند، بلکه اجازه می‌دهد لایه‌های ابتدایی (که مسئول استخراج ویژگی‌های کلیدی هستند) همگام با لایه‌های نهایی رشد کنند.
+                <br><span style="color: #66fcf1;">این گزارش، یک مستند علمی کامل برای اثبات <b>Vanishing Gradient</b> و راه‌حل آن در معماری‌های مدرن است.</span>
+            </div>
+        </div>
+
+        <!-- بخش دوازدهم: تحلیل پایداری جریان گرادیان -->
+        <div class="card">
+            <h2 style="color: #58a6ff;">⚖️ تحلیل پایداری جریان گرادیان (First/Last Ratio Evolution)</h2>
+            
+            <div class="image-grid">
+                <div class="image-item">
+                    <img src="gradflow_relu_he.png" alt="Gradient Flow ReLU">
+                    <div class="image-caption">جریان گرادیان ReLU + He</div>
+                </div>
+                <div class="image-item">
+                    <img src="gradflow_sigmoid_xavier.png" alt="Gradient Flow Sigmoid">
+                    <div class="image-caption">جریان گرادیان Sigmoid + Xavier</div>
+                </div>
+            </div>
+
+            <div class="comparison-row">
+                <div class="comparison-box box-relu">
+                    <h3 style="color: #3fb950;">🟢 ReLU + He: پمپاژ معکوس قوی</h3>
+                    <p>در این ترکیب، نسبت از ۰.۵ به <b>~۶.۰</b> جهش می‌کند. این یعنی در انتهای آموزش، لایه اول ۶ برابر لایه آخر گرادیان دریافت می‌کند. این پدیده نشان می‌دهد که نه تنها Vanishing حل شده، بلکه شبکه به شدت در حال اصلاح ویژگی‌های پایه (Low-level features) است.</p>
+                    <span class="badge">وضعیت: غلبه بر Vanishing</span>
+                </div>
+                <div class="comparison-box box-sigmoid">
+                    <h3 style="color: #f85149;">🔴 Sigmoid + Xavier: بهبود در مقیاس اتمی</h3>
+                    <p>اگرچه نسبت به ۳ می‌رسد، اما این عدد در دنیای 10⁻¹² معنایی ندارد. لایه اول ۳ برابر لایه آخر "تقریباً هیچ" دریافت می‌کند! روند صعودی خطی نشان‌دهنده یک تلاش بی‌ثمر برای بیدار کردن شبکه است که هرگز به نتیجه نمی‌رسد.</p>
+                    <span class="badge" style="border-color: #f85149;">وضعیت: حبس در مقیاس نانو</span>
+                </div>
+            </div>
+
+            <h3 style="text-align: center; margin: 25px 0; color: #58a6ff;">📊 مقایسه روند تکامل نسبت پایداری (First/Last)</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr style="background: #161b22; color: #58a6ff;">
+                            <th>Epoch</th>
+                            <th>ReLU + He (Ratio)</th>
+                            <th>Sigmoid + Xavier (Ratio)</th>
+                            <th>تحلیل شکاف یادگیری</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>2</td><td style="color: #f85149;">~۰.۷</td><td>~۰.۵</td><td>هر دو در فاز سردرگمی اولیه</td></tr>
+                        <tr><td>6</td><td style="color: #3fb950; font-weight: bold;">~۴.۰</td><td>~۲.۰</td><td>ReLU کنترل ورودی را در دست گرفت</td></tr>
+                        <tr><td>10</td><td style="color: #3fb950; font-weight: bold;">~۶.۰</td><td>~۳.۰</td><td>شکاف کیفی عظیم (مقیاس ۱ به ۱ میلیارد)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tip-box" style="background: #000; border-color: #f1c40f;">
+                <strong style="color: #f1c40f;">🏁 جمع‌بندی نهایی کل آزمایش سریالی:</strong> این نمودار نشان داد که <b>ReLU + He</b> نه تنها گرادیان را "حفظ" می‌کند، بلکه با گذشت زمان، تمرکز یادگیری را به لایه‌های ابتدایی منتقل می‌کند تا پایه شبکه محکم شود. در حالی که <b>Sigmoid</b> حتی اگر نسبت عددی‌اش کمی رشد کند، به دلیل <b>بنیان ضعیف (مقیاس 10⁻¹²)</b>، هرگز قادر به انجام عملیات بهینه‌سازی واقعی نیست.
+                <br><span style="color: #c9d1d9;">با این تحلیل، شما ثابت کردید که <b>ثبات جریان گرادیان</b> در ReLU حدود <strong>صد میلیارد برابر</strong> باکیفیت‌تر از Sigmoid است.</span>
+            </div>
+        </div>
+
+        <!-- بخش سیزدهم: تحلیل گرادیان به تفکیک لایه -->
+        <div class="card">
+            <h2 style="color: #66fcf1;">📉 تحلیل گرادیان به تفکیک لایه (Per-Layer Gradient Evolution)</h2>
+            
+            <div class="image-item">
+                <img src="rely_sigmoid.png" alt="ReLU vs Sigmoid per layer">
+                <div class="image-caption">مقایسه گرادیان لایه به لایه</div>
+            </div>
+
+            <div class="comparison-row">
+                <div class="comparison-box box-relu">
+                    <h3 style="color: #66fcf1;">🟢 ReLU + He: ارکستر هماهنگ</h3>
+                    <p>در این مدل، خطوط رنگی (لایه‌های مختلف) به صورت <b>موازی و هماهنگ</b> حرکت می‌کنند. این یعنی تمام لایه‌ها از L1 تا L11 با یک سرعت و شدت در حال یادگیری هستند. کاهش گرادیان در اینجا به معنای "مرگ" نیست، بلکه به معنای <b>پختگی (Settling)</b> مدل در فضای بهینه است.</p>
+                    <span class="badge">وضعیت: توزیع همگن سیگنال</span>
+                </div>
+                <div class="comparison-box box-sigmoid">
+                    <h3 style="color: #e74c3c;">🔴 Sigmoid + Xavier: سقوط نامتقارن</h3>
+                    <p>لایه‌های ابتدایی (L1-L3) از همان ابتدا در کف نمودار حبس شده‌اند. لایه‌های انتهایی هم که شروع خوبی داشتند، پس از Epoch 5 دچار <b>ایست قلبی (Flatline)</b> می‌شوند. ناهماهنگی بین لایه‌ها ثابت می‌کند که زنجیره Backpropagation در نیمه راه گسسته شده است.</p>
+                    <span class="badge" style="border-color: #e74c3c;">وضعیت: قطع زنجیره یادگیری</span>
+                </div>
+            </div>
+
+            <h3 style="text-align: center; margin: 25px 0; color: #45a29e;">📊 کالبدشکافی رفتار لایه به لایه (Final Verdict)</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr style="background: #000; color: #66fcf1;">
+                            <th>شاخص لایه</th>
+                            <th>ReLU + He</th>
+                            <th>Sigmoid + Xavier</th>
+                            <th>تفسیر فنی</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td style="font-weight: bold;">لایه اول (L1)</td><td style="color: #66fcf1;">زنده و مؤثر (~۰.۱)</td><td style="color: #e74c3c;">صفر مطلق (10⁻¹⁰)</td><td>ReLU ویژگی‌های پایه را حفظ می‌کند</td></tr>
+                        <tr><td style="font-weight: bold;">لایه‌های میانی</td><td>کاهش تدریجی و هماهنگ</td><td>افت ناگهانی به صفر</td><td>Sigmoid در عمق دچار خفگی می‌شود</td></tr>
+                        <tr><td style="font-weight: bold;">هماهنگی (Parallelism)</td><td>بسیار بالا</td><td>بسیار پایین</td><td>ReLU کل شبکه را با هم آپدیت می‌کند</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tip-box" style="background: #000; border-color: #45a29e;">
+                <strong style="color: #f1c40f;">🏁 پایان کالبدشکافی: حکم نهایی آزمایش</strong>
+                <p>این نمودار Per-layer مهر تأییدی بود بر تمام فرضیات: در <b>Sigmoid</b>، شبکه مانند شمعی است که از دو طرف (هم از لایه‌های ورودی به خاطر Vanishing و هم از لایه‌های خروجی به خاطر اشباع) خاموش می‌شود. اما در <b>ReLU + He</b>، شبکه مانند یک "ارگانیسم واحد" عمل می‌کند؛ تمام لایه‌ها سیگنال را دریافت کرده، با هم یاد می‌گیرند و با هم به ثبات می‌رسند.</p>
+                <span style="color: #66fcf1;">این دقیقاً همان دلیلی است که به ما اجازه می‌دهد معماری‌های غول‌آسایی مثل <b>Transformers</b> و <b>ResNets</b> بسازیم؛ تعادل در انتقال سیگنال.</span>
+            </div>
+        </div>
+
+        <!-- نتیجه‌گیری نهایی -->
+        <div class="final-verdict">
+            <h1 style="color: #ff99ff;">🏁 نتیجه‌گیری نهایی پروژه: تحلیل تجربی گرادیان</h1>
+            
+            <div style="display: flex; flex-wrap: wrap; gap: 25px; margin: 30px 0;">
+                <div style="flex: 1; min-width: 280px; background: #1f1f3a; padding: 25px; border-radius: 20px; border-right: 8px solid #ff4d4d;">
+                    <h3 style="color: #ff6b6b;">❌ استراتژی Sigmoid + Xavier: بن‌بست یادگیری</h3>
+                    <p>در شبکه‌های با عمق بیش از ۱۰ لایه، این ترکیب با شکست کامل مواجه شد:</p>
+                    <ul style="text-align: right;">
+                        <li><b>مقیاس نانو:</b> گرادیان‌های لایه‌های ابتدایی در محدوده 10⁻⁹ تا 10⁻¹¹ قفل شدند.</li>
+                        <li><b>انجماد وزنی:</b> به‌روزرسانی وزنه‌ها به قدری ناچیز بود که عملاً ساختار شبکه ثابت ماند.</li>
+                        <li><b>انحلال سیگنال:</b> نسبت First/Last بسیار پایین ماند که نشان‌دهنده ناتوانی مطلق در انتقال خطا به ورودی است.</li>
+                    </ul>
+                </div>
+                <div style="flex: 1; min-width: 280px; background: #1f1f3a; padding: 25px; border-radius: 20px; border-right: 8px solid #8a2be2;">
+                    <h3 style="color: #b87cff;">✅ استراتژی ReLU + He: استاندارد طلایی</h3>
+                    <p>این ترکیب با موفقیت سد Vanishing Gradient را در هم شکست:</p>
+                    <ul style="text-align: right;">
+                        <li><b>جریان پایدار:</b> گرادیان‌ها در تمام ۱۱ لایه به صورت هماهنگ و معنادار جریان پیدا کردند.</li>
+                        <li><b>خود-اصلاحی:</b> نسبت First/Last با گذشت زمان از ۱ فراتر رفت (تا ~۶)، که نشان‌دهنده تمرکز یادگیری بر لایه‌های بنیادین است.</li>
+                        <li><b>همگرایی واقعی:</b> آپدیت‌های قوی در ابتدا و کاهش طبیعی آن‌ها در انتها، نشانه یک فرآیند بهینه‌سازی سالم و پایدار است.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3 style="color: #b87cff; margin: 30px 0 20px;">📊 مقایسه نهایی در یک نگاه</h3>
+            <div class="table-container">
+                <table style="background: #0a0a15;">
+                    <thead style="background: #2a1a3a;">
+                        <tr>
+                            <th>پارامتر تحلیل</th>
+                            <th>Sigmoid + Xavier</th>
+                            <th>ReLU + He Initialization</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td style="font-weight: bold;">وضعیت لایه‌های ابتدایی</td><td style="color: #ff6b6b;">مرگ مغزی (Vanished)</td><td style="color: #8a2be2;">فعال و پویا</td></tr>
+                        <tr><td style="font-weight: bold;">انتقال سیگنال خطا</td><td style="color: #ff6b6b;">تضعیف زنجیره‌ای (۱۳٪)</td><td style="color: #8a2be2;">انتقال وفادار (۹۴٪)</td></tr>
+                        <tr><td style="font-weight: bold;">پتانسیل آموزش عمیق</td><td style="color: #ff6b6b;">محدود به ۳-۴ لایه</td><td style="color: #8a2be2;">نامحدود (قابلیت Scaling)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="margin-top: 30px; padding: 25px; background: #000; border-radius: 20px; border: 2px solid #8a2be2;">
+                <p style="font-size: 1.2em; color: #f1c40f;"><strong>💡 سخن پایانی:</strong></p>
+                <p style="font-size: 1.1em;">نتایج این آزمایش ثابت کرد که <b>معماری صحیح</b> (انتخاب تابع فعال‌ساز و مقداردهی اولیه متناسب) اهمیت بیشتری از سخت‌افزار یا داده دارد. <b>ReLU + He</b> با حفظ پایداری عددی، اجازه می‌دهد "دانش" از لایه‌های خروجی به عمیق‌ترین نقاط شبکه نفوذ کند؛ مزیتی که Sigmoid را در دنیای مدل‌های عمیق به تاریخ سپرد.</p>
             </div>
         </div>
     </div>
-
-</div> <!-- page-container -->
 </body>
 </html>
